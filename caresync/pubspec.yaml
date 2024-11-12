@@ -12,6 +12,8 @@ dependencies:
   flutter_svg: ^2.0.11
   google_fonts: ^6.2.1
   intl: ^0.19.0
+  image_picker: ^1.1.2
+  carousel_slider: ^5.0.0
 
 dev_dependencies:
   flutter_test:
@@ -23,3 +25,21 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/png/
+    - assets/png/MedicalStores/
+    - assets/png/Categories/
+    - assets/png/Category1/
+    - assets/png/Category2/
+    - assets/png/Category3/
+    - assets/png/Category4/
+    - assets/png/Category5/
+    - assets/png/Category6/
+    - assets/png/Category7/
+    - assets/png/Category8/
+    - assets/png/Category9/
+    - assets/png/Category10/
+    - assets/jpg/MedicalStoreCaraoiusal/
+    - assets/jpg/CategoryCaraiousal/
+    - assets/jpg/Categories/
+    - assets/jpg/
+    - assets/jpeg/
