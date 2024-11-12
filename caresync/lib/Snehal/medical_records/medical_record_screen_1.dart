@@ -1,4 +1,4 @@
-import 'package:caresync/medical_records/all_records.dart';
+import 'package:caresync/Snehal/medical_records/all_records.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
