@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:caresync/medical_records/medical_record_screen_1.dart';
+import 'package:caresync/Snehal/medical_records/medical_record_screen_1.dart';
 class SelectTime extends StatefulWidget {
   const SelectTime({super.key});
 
@@ -166,106 +166,6 @@ class _SelectTimeState extends State<SelectTime> {
                   ],
                 ),
               ),
-
-              ///ROW - SLOTS
-              // SingleChildScrollView(
-              //   scrollDirection: Axis.horizontal,
-              //   child: Padding(
-              //     padding: const EdgeInsets.symmetric(vertical: 25),
-              //     child: Row(
-              //       children: [
-              //         Container(
-              //           margin: const EdgeInsets.only(right: 15),
-              //           padding: const EdgeInsets.all(15),
-              //           decoration: BoxDecoration(
-              //               borderRadius: BorderRadius.circular(12),
-              //               border: Border.all(
-              //                   color:
-              //                       const Color.fromARGB(103, 114, 148, 120))),
-              //           child: Column(
-              //             children: [
-              //               Text(
-              //                 "Today,23Feb",
-              //                 style: GoogleFonts.rubik(
-              //                   fontSize: 18,
-              //                   fontWeight: FontWeight.w600,
-              //                   color: Colors.black,
-              //                 ),
-              //               ),
-              //               Text(
-              //                 "No slots available",
-              //                 style: GoogleFonts.rubik(
-              //                   fontSize: 13,
-              //                   fontWeight: FontWeight.w400,
-              //                   color: const Color.fromRGBO(0, 0, 0, 0.6),
-              //                 ),
-              //               ),
-              //             ],
-              //           ),
-              //         ),
-              //         Container(
-              //           margin: const EdgeInsets.only(right: 15),
-              //           padding: const EdgeInsets.all(15),
-              //           decoration: BoxDecoration(
-              //             borderRadius: BorderRadius.circular(12),
-              //             // border: Border.all(
-              //             //     color: const Color.fromARGB(255, 124, 123, 123)),
-              //             color: const Color.fromRGBO(14, 190, 127, 1),
-              //           ),
-              //           child: Column(
-              //             children: [
-              //               Text(
-              //                 "Tomorrow,24Feb",
-              //                 style: GoogleFonts.rubik(
-              //                   fontSize: 18,
-              //                   fontWeight: FontWeight.w600,
-              //                   color: Colors.black,
-              //                 ),
-              //               ),
-              //               Text(
-              //                 "9 slots available",
-              //                 style: GoogleFonts.rubik(
-              //                   fontSize: 13,
-              //                   fontWeight: FontWeight.w400,
-              //                   color: const Color.fromRGBO(0, 0, 0, 0.6),
-              //                 ),
-              //               ),
-              //             ],
-              //           ),
-              //         ),
-              //         Container(
-              //           margin: const EdgeInsets.only(right: 15),
-              //           padding: const EdgeInsets.all(15),
-              //           decoration: BoxDecoration(
-              //             borderRadius: BorderRadius.circular(12),
-              //             border: Border.all(
-              //                 color: const Color.fromARGB(103, 114, 148, 120)),
-              //           ),
-              //           child: Column(
-              //             children: [
-              //               Text(
-              //                 "Today,23Feb",
-              //                 style: GoogleFonts.rubik(
-              //                   fontSize: 18,
-              //                   fontWeight: FontWeight.w600,
-              //                   color: Colors.black,
-              //                 ),
-              //               ),
-              //               Text(
-              //                 "No slots available",
-              //                 style: GoogleFonts.rubik(
-              //                   fontSize: 13,
-              //                   fontWeight: FontWeight.w400,
-              //                   color: const Color.fromRGBO(0, 0, 0, 0.6),
-              //                 ),
-              //               ),
-              //             ],
-              //           ),
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
 
               ///TEXT
               Padding(
