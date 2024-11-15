@@ -2,7 +2,7 @@ import 'package:caresync/Tejas/PatientSide.dart/PatientHomeScreen.dart';
 import 'package:caresync/Tejas/Login&Sigup/Patient/SignUp.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:google_sign_in/google_sign_in.dart';
 
 class PatientSignInPage extends StatefulWidget {
   const PatientSignInPage({super.key});
@@ -19,6 +19,8 @@ class _PatientSignInPageState extends State<PatientSignInPage> {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
   void _togglePasswordVisibility() {
     setState(() {
       _isPasswordVisible = !_isPasswordVisible;
@@ -26,7 +28,8 @@ class _PatientSignInPageState extends State<PatientSignInPage> {
   }
 
   void _showSnackbar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   // Future<void> _signIn() async {
@@ -74,28 +77,30 @@ class _PatientSignInPageState extends State<PatientSignInPage> {
   // }
 
   Future<void> _signIn() async {
-  if (_patientformKey.currentState!.validate()) {
-    try {
-      final email = _phoneEmailController.text.trim();
-      final password = _passwordController.text.trim();
+    if (_patientformKey.currentState!.validate()) {
+      try {
+        final email = _phoneEmailController.text.trim();
+        final password = _passwordController.text.trim();
 
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
+        await _auth.signInWithEmailAndPassword(
+            email: email, password: password);
 
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const PatientHomeScreen()),
-      );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        _showSnackbar("No account found. Please create a new account to get started.");
-      } else {
-        // Authentication issue (generic message for wrong-password or other issues)
-        _showSnackbar("Authentication failed. Please check your credentials and try again.");
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const PatientHomeScreen()),
+        );
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          _showSnackbar(
+              "No account found. Please create a new account to get started.");
+        } else {
+          // Authentication issue (generic message for wrong-password or other issues)
+          _showSnackbar(
+              "Authentication failed. Please check your credentials and try again.");
+        }
       }
     }
   }
-}
 
-  
   Future<void> _sendPasswordResetEmail() async {
     final email = _phoneEmailController.text.trim();
     if (email.isEmpty) {
@@ -107,6 +112,40 @@ class _PatientSignInPageState extends State<PatientSignInPage> {
       _showSnackbar('Password reset email sent. Check your inbox.');
     } catch (e) {
       _showSnackbar('Failed to send reset email: ${e.toString()}');
+    }
+  }
+
+  Future<void> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) {
+        _showSnackbar("Google Sign-In canceled");
+        return;
+      }
+
+      // Obtain the authentication details from the request
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // Create a new credential
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Sign in to Firebase with the credential
+      final UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+
+      if (userCredential.user != null) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const PatientHomeScreen()),
+        );
+      } else {
+        _showSnackbar("Sign-In failed. Please try again.");
+      }
+    } catch (e) {
+      _showSnackbar("Google Sign-In error: ${e.toString()}");
     }
   }
 
@@ -208,7 +247,8 @@ class _PatientSignInPageState extends State<PatientSignInPage> {
                       onPressed: _sendPasswordResetEmail,
                       child: const Text(
                         'Forgot password?',
-                        style: TextStyle(color: Color.fromRGBO(14, 190, 127, 1)),
+                        style:
+                            TextStyle(color: Color.fromRGBO(14, 190, 127, 1)),
                       ),
                     ),
                   ),
@@ -260,8 +300,8 @@ class _PatientSignInPageState extends State<PatientSignInPage> {
                     children: [
                       const Expanded(child: Divider()),
                       Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.02),
                         child: const Text('OR'),
                       ),
                       const Expanded(child: Divider()),
@@ -270,7 +310,7 @@ class _PatientSignInPageState extends State<PatientSignInPage> {
                   SizedBox(height: screenHeight * 0.04),
                   Center(
                     child: ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: signInWithGoogle,
                       label: Text(
                         'Sign In with Google',
                         style: TextStyle(fontSize: fontSizeButton),

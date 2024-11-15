@@ -2,6 +2,7 @@ import 'package:caresync/Komal/DoctorSide/DoctorHomeScreen.dart';
 import 'package:caresync/Tejas/Login&Sigup/Doctor/SignUp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class DoctorSignInPage extends StatefulWidget {
   const DoctorSignInPage({super.key});
@@ -17,6 +18,8 @@ class _DoctorSignInPageState extends State {
   bool _isPasswordVisible = false;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  final GoogleSignIn googleSignIn = GoogleSignIn();
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -57,44 +60,43 @@ class _DoctorSignInPageState extends State {
   // }
 
   Future<void> _signIn() async {
-  if (_doctorformKey.currentState!.validate()) {
-    try {
-      final email = _dphoneEmailController.text.trim();
-      final password = _dpasswordController.text.trim();
+    if (_doctorformKey.currentState!.validate()) {
+      try {
+        final email = _dphoneEmailController.text.trim();
+        final password = _dpasswordController.text.trim();
 
-      // Firebase Authentication Sign-In
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      print('User Signed In: ${userCredential.user?.email}');
+        // Firebase Authentication Sign-In
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+        print('User Signed In: ${userCredential.user?.email}');
 
-      // Navigate to DoctorHomeScreen
-      if (context.mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const DoctorHomeScreen()),
-        );
+        // Navigate to DoctorHomeScreen
+        if (context.mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const DoctorHomeScreen()),
+          );
+        }
+      } on FirebaseAuthException catch (e) {
+        // Handle Firebase errors
+        print('FirebaseAuthException: ${e.code}');
+        if (e.code == 'user-not-found') {
+          _showSnackbar(
+            "No account found. Please create a new account to get started.",
+          );
+        } else if (e.code == 'wrong-password') {
+          _showSnackbar("Incorrect password. Please try again.");
+        } else {
+          _showSnackbar("Authentication failed: ${e.message}");
+        }
+      } catch (e) {
+        // Handle any other errors
+        print('Exception: $e');
+        _showSnackbar("An error occurred. Please try again.");
       }
-    } on FirebaseAuthException catch (e) {
-      // Handle Firebase errors
-      print('FirebaseAuthException: ${e.code}');
-      if (e.code == 'user-not-found') {
-        _showSnackbar(
-          "No account found. Please create a new account to get started.",
-        );
-      } else if (e.code == 'wrong-password') {
-        _showSnackbar("Incorrect password. Please try again.");
-      } else {
-        _showSnackbar("Authentication failed: ${e.message}");
-      }
-    } catch (e) {
-      // Handle any other errors
-      print('Exception: $e');
-      _showSnackbar("An error occurred. Please try again.");
     }
   }
-}
-
 
   Future<void> _sendPasswordResetEmail() async {
     final email = _dphoneEmailController.text.trim();
@@ -107,6 +109,40 @@ class _DoctorSignInPageState extends State {
       _showSnackbar('Password reset email sent. Check your inbox.');
     } catch (e) {
       _showSnackbar('Failed to send reset email: ${e.toString()}');
+    }
+  }
+
+  Future<void> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) {
+        _showSnackbar("Google Sign-In canceled");
+        return;
+      }
+
+      // Obtain the authentication details from the request
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // Create a new credential
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Sign in to Firebase with the credential
+      final UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+
+      if (userCredential.user != null) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const DoctorHomeScreen()),
+        );
+      } else {
+        _showSnackbar("Sign-In failed. Please try again.");
+      }
+    } catch (e) {
+      _showSnackbar("Google Sign-In error: ${e.toString()}");
     }
   }
 
@@ -153,58 +189,59 @@ class _DoctorSignInPageState extends State {
                   ),
                   SizedBox(height: screenHeight * 0.05),
                   TextFormField(
-                      controller: _dphoneEmailController,
-                      decoration: InputDecoration(
-                        labelText: 'Enter your phone/email',
-                        prefixIcon: Icon(Icons.email, size: iconSize),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
+                    controller: _dphoneEmailController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter your phone/email',
+                      prefixIcon: Icon(Icons.email, size: iconSize),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your phone or email';
-                        }
-                        return null;
-                      },
                     ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your phone or email';
+                      }
+                      return null;
+                    },
+                  ),
                   SizedBox(height: screenHeight * 0.025),
                   TextFormField(
-                      controller: _dpasswordController,
-                      obscureText: !_isPasswordVisible,
-                      decoration: InputDecoration(
-                        labelText: 'Enter your password',
-                        prefixIcon: Icon(Icons.lock, size: iconSize),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _isPasswordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            size: iconSize,
-                          ),
-                          onPressed: _togglePasswordVisibility,
+                    controller: _dpasswordController,
+                    obscureText: !_isPasswordVisible,
+                    decoration: InputDecoration(
+                      labelText: 'Enter your password',
+                      prefixIcon: Icon(Icons.lock, size: iconSize),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          size: iconSize,
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
+                        onPressed: _togglePasswordVisibility,
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        return null;
-                      },
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
                     ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your password';
+                      }
+                      return null;
+                    },
+                  ),
                   Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: _sendPasswordResetEmail,
-                        child: const Text(
-                          'Forgot password?',
-                          style: TextStyle(color: Color.fromRGBO(14, 190, 127, 1)),
-                        ),
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: _sendPasswordResetEmail,
+                      child: const Text(
+                        'Forgot password?',
+                        style:
+                            TextStyle(color: Color.fromRGBO(14, 190, 127, 1)),
                       ),
                     ),
+                  ),
                   SizedBox(height: screenHeight * 0.025),
                   ElevatedButton(
                     onPressed: _signIn,
@@ -253,8 +290,8 @@ class _DoctorSignInPageState extends State {
                     children: [
                       const Expanded(child: Divider()),
                       Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.02),
                         child: const Text('OR'),
                       ),
                       const Expanded(child: Divider()),
