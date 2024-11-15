@@ -1,6 +1,8 @@
 
+import 'package:caresync/Snehal/landingpage.dart';
 import 'package:caresync/Tejas/AdminSide/AddAmbulance.dart';
 import 'package:caresync/Tejas/AdminSide/AmbulancesList.dart';
+import 'package:caresync/Tejas/Welcome.dart';
 import 'package:flutter/material.dart';
 import 'MedicalStoresList.dart';
 import 'AddMedicalStores.dart';
@@ -263,7 +265,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Add logout functionality here
+                        Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const LandingPage()),
+                            );
                         setState(() => isDrawerOpen = false); // Close drawer
                       },
                       child: const Padding(
