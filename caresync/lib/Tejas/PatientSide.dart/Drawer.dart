@@ -6,8 +6,11 @@ import 'package:caresync/Tejas/PatientSide.dart/Orders.dart';
 import 'package:caresync/Tejas/PatientSide.dart/PatientProfile.dart';
 import 'package:caresync/Tejas/PatientSide.dart/Wishlist.dart';
 import 'package:caresync/Tejas/Welcome.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppDrawer extends StatefulWidget {
   final bool isDarkMode;
@@ -24,13 +27,47 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
-  int selectedIndex = -1; 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  int selectedIndex = -1;
 
   void _onItemTapped(int index, BuildContext context, Widget page) {
     setState(() {
       selectedIndex = index;
     });
     Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+  }
+
+  String _patientName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPatientData();
+  }
+
+  Future<void> _loadPatientData() async {
+    try {
+      User? user = _auth.currentUser; 
+      if (user != null) {
+        // Fetch patient data from Firestore
+        DocumentSnapshot snapshot = await _firestore
+            .collection('patients') 
+            .doc(user.uid) 
+            .get();
+
+        if (snapshot.exists) {
+          Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+          setState(() {
+            _patientName = data['name'] ;
+          });
+          
+        }
+      }
+    } catch (e) {
+      print('Error fetching patient data: $e');
+    }
   }
 
   @override
@@ -56,25 +93,36 @@ class _AppDrawerState extends State<AppDrawer> {
                     child: CircleAvatar(
                       backgroundColor: Colors.grey[400],
                       radius: 30,
-                      child: const Icon(Icons.person, size: 40, color: Colors.grey),
+                      child: const Icon(Icons.person,
+                          size: 40, color: Colors.grey),
                     ),
                   ),
                   const SizedBox(width: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Tejas', style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text(
+                        _patientName,
+                        style: GoogleFonts.lato(
+                          fontSize: 18, fontWeight: FontWeight.bold
+                        )
+                      ),
                     ],
                   ),
                 ],
               ),
             ),
             const Divider(),
-            _buildDrawerItem(Icons.calendar_today, 'My Appointments', context, const Cart(), 0),
-            _buildDrawerItem(Icons.list, 'My Orders', context, const OrdersPage(), 1),
-            _buildDrawerItem(Icons.shopping_cart, 'My Cart', context, const Cart(), 2),
-            _buildDrawerItem(Icons.favorite, 'Wishlist', context, const Wishlist(), 3),
-            _buildDrawerItem(Icons.medical_services, 'Medical Records', context, const RecordScreen1(), 4),
+            _buildDrawerItem(Icons.calendar_today, 'My Appointments', context,
+                const Cart(), 0),
+            _buildDrawerItem(
+                Icons.list, 'My Orders', context, const OrdersPage(), 1),
+            _buildDrawerItem(
+                Icons.shopping_cart, 'My Cart', context, const Cart(), 2),
+            _buildDrawerItem(
+                Icons.favorite, 'Wishlist', context, const Wishlist(), 3),
+            _buildDrawerItem(Icons.medical_services, 'Medical Records', context,
+                const RecordScreen1(), 4),
             const Divider(),
             ListTile(
               leading: AnimatedContainer(
@@ -120,23 +168,23 @@ class _AppDrawerState extends State<AppDrawer> {
                             style: TextStyle(color: Colors.green),
                           ),
                           onPressed: () {
-                            Navigator.of(context).pop(); 
+                            Navigator.of(context).pop();
                           },
                         ),
                         TextButton(
+                          onPressed: () async {
+                            Navigator.of(context).pop();
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            await prefs.clear(); // Clear all saved data
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) => const LandingPage()));
+                          },
                           child: const Text(
                             'Ok',
-                            style: TextStyle(color: Colors.green),
+                            style: const TextStyle(color: Colors.green),
                           ),
-                          onPressed: () {
-                            Navigator.of(context).pop(); 
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const LandingPage()),
-                            );
-                          },
                         ),
                       ],
                     );
@@ -150,17 +198,22 @@ class _AppDrawerState extends State<AppDrawer> {
     );
   }
 
-  Widget _buildDrawerItem(IconData icon, String title, BuildContext context, Widget page, int index) {
+  Widget _buildDrawerItem(IconData icon, String title, BuildContext context,
+      Widget page, int index) {
     return ListTile(
       leading: Icon(
         icon,
-        color: selectedIndex == index ? const Color.fromRGBO(14, 190, 127, 1) : Colors.black, 
+        color: selectedIndex == index
+            ? const Color.fromRGBO(14, 190, 127, 1)
+            : Colors.black,
       ),
       title: Text(
         title,
         style: GoogleFonts.lato(
           fontSize: 16,
-          color: selectedIndex == index ? const Color.fromRGBO(14, 190, 127, 1) : Colors.black, 
+          color: selectedIndex == index
+              ? const Color.fromRGBO(14, 190, 127, 1)
+              : Colors.black,
         ),
       ),
       onTap: () => _onItemTapped(index, context, page),

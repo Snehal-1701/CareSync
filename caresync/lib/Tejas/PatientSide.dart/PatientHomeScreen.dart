@@ -7,6 +7,8 @@ import 'package:caresync/Tejas/PatientSide.dart/Cart.dart';
 import 'package:caresync/Tejas/PatientSide.dart/MedicalStore.dart';
 import 'package:caresync/Tejas/PatientSide.dart/Orders.dart';
 import 'package:caresync/Tejas/PatientSide.dart/Wishlist.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'Drawer.dart';
@@ -19,6 +21,8 @@ class PatientHomeScreen extends StatefulWidget {
 }
 
 class _PatientHomeScreenState extends State<PatientHomeScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   int _selectedIndex = 0;
   bool isDarkMode = false;
 
@@ -77,6 +81,39 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
       _selectedIndex = index;
     });
   }
+
+  String _patientName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPatientData();
+  }
+
+  Future<void> _loadPatientData() async {
+    try {
+      User? user = _auth.currentUser; 
+      if (user != null) {
+        // Fetch patient data from Firestore
+        DocumentSnapshot snapshot = await _firestore
+            .collection('patients') 
+            .doc(user.uid) 
+            .get();
+
+        if (snapshot.exists) {
+          Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+          setState(() {
+            _patientName = data['name'] ;
+          });
+          
+        }
+      }
+    } catch (e) {
+      print('Error fetching patient data: $e');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -287,7 +324,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
               ),
               const SizedBox(height: 4),
               Text(
-                'Tejas',
+                _patientName,
                 style: GoogleFonts.lato(fontSize: width * 0.06, color: Colors.black),
               ),
             ],

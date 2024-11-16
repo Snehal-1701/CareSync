@@ -2,6 +2,7 @@ import 'package:caresync/Tejas/PatientSide.dart/PatientHomeScreen.dart';
 import 'package:caresync/Tejas/Login&Sigup/Patient/SignUp.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class PatientSignInPage extends StatefulWidget {
@@ -18,7 +19,7 @@ class _PatientSignInPageState extends State<PatientSignInPage> {
   bool _isPasswordVisible = false;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
   void _togglePasswordVisibility() {
@@ -32,7 +33,7 @@ class _PatientSignInPageState extends State<PatientSignInPage> {
         .showSnackBar(SnackBar(content: Text(message)));
   }
 
-  // Future<void> _signIn() async {
+  //Future<void> _signIn() async {
   //   if (_formKey.currentState!.validate()) {
   //     try {
   //       final email = _phoneEmailController.text.trim();
@@ -76,27 +77,74 @@ class _PatientSignInPageState extends State<PatientSignInPage> {
   //   }
   // }
 
+  // Future<void> _signIn() async {
+  //   if (_patientformKey.currentState!.validate()) {
+  //     try {
+  //       final email = _phoneEmailController.text.trim();
+  //       final password = _passwordController.text.trim();
+
+  //       await _auth.signInWithEmailAndPassword(
+  //           email: email, password: password);
+
+  //       Navigator.of(context).pushReplacement(
+  //         MaterialPageRoute(builder: (context) => const PatientHomeScreen()),
+  //       );
+  //     } on FirebaseAuthException catch (e) {
+  //       if (e.code == 'user-not-found') {
+  //         _showSnackbar(
+  //             "No account found. Please create a new account to get started.");
+  //       } else {
+  //         // Authentication issue (generic message for wrong-password or other issues)
+  //         _showSnackbar(
+  //             "Authentication failed. Please check your credentials and try again.");
+  //       }
+  //     }
+  //   }
+  // }
+
   Future<void> _signIn() async {
     if (_patientformKey.currentState!.validate()) {
       try {
         final email = _phoneEmailController.text.trim();
         final password = _passwordController.text.trim();
 
-        await _auth.signInWithEmailAndPassword(
-            email: email, password: password);
-
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const PatientHomeScreen()),
+        final UserCredential userCredential =
+            await _auth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
         );
+
+        final User? user = userCredential.user;
+
+        if (user != null) {
+          // Fetching user role from the 'patient' section in Firestore
+          final DocumentSnapshot snapshot =
+              await _firestore.collection('patients').doc(user.uid).get();
+
+          if (snapshot.exists) {
+            // User is authenticated as a patient
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                  builder: (context) => const PatientHomeScreen()),
+            );
+          } else {
+            // Not a patient account
+            _auth.signOut();
+            _showSnackbar(
+                "This account is not registered as a patient. Please check your credentials.");
+          }
+        }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
           _showSnackbar(
-              "No account found. Please create a new account to get started.");
+              "No patient account found. Please create a new account to get started.");
+        } else if (e.code == 'wrong-password') {
+          _showSnackbar("Incorrect password. Please try again.");
         } else {
-          // Authentication issue (generic message for wrong-password or other issues)
-          _showSnackbar(
-              "Authentication failed. Please check your credentials and try again.");
+          _showSnackbar("Sign-in failed: ${e.message}");
         }
+      } catch (e) {
+        _showSnackbar("Sign-in failed: ${e.toString()}");
       }
     }
   }
@@ -123,7 +171,6 @@ class _PatientSignInPageState extends State<PatientSignInPage> {
         return;
       }
 
-      // Obtain the authentication details from the request
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
 
@@ -133,16 +180,24 @@ class _PatientSignInPageState extends State<PatientSignInPage> {
         idToken: googleAuth.idToken,
       );
 
-      // Sign in to Firebase with the credential
       final UserCredential userCredential =
           await _auth.signInWithCredential(credential);
 
       if (userCredential.user != null) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const PatientHomeScreen()),
-        );
-      } else {
-        _showSnackbar("Sign-In failed. Please try again.");
+        final user = userCredential.user;
+
+        final DocumentSnapshot snapshot =
+            await _firestore.collection('patient').doc(user!.uid).get();
+
+        if (snapshot.exists) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const PatientHomeScreen()),
+          );
+        } else {
+          _auth.signOut();
+          _showSnackbar(
+              "This account is not registered as a patient. Please use a patient account.");
+        }
       }
     } catch (e) {
       _showSnackbar("Google Sign-In error: ${e.toString()}");
@@ -201,7 +256,7 @@ class _PatientSignInPageState extends State<PatientSignInPage> {
                   TextFormField(
                     controller: _phoneEmailController,
                     decoration: InputDecoration(
-                      labelText: 'Enter your phone/email',
+                      labelText: 'Enter your email',
                       prefixIcon: Icon(Icons.email, size: iconSize),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
@@ -209,7 +264,7 @@ class _PatientSignInPageState extends State<PatientSignInPage> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your phone or email';
+                        return 'Please enter your email';
                       }
                       return null;
                     },
@@ -302,32 +357,31 @@ class _PatientSignInPageState extends State<PatientSignInPage> {
                       Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: screenWidth * 0.02),
-                        child: const Text('OR'),
+                        child: const Text('or sign in with'),
                       ),
                       const Expanded(child: Divider()),
                     ],
                   ),
-                  SizedBox(height: screenHeight * 0.04),
-                  Center(
-                    child: ElevatedButton.icon(
-                      onPressed: signInWithGoogle,
-                      label: Text(
-                        'Sign In with Google',
-                        style: TextStyle(fontSize: fontSizeButton),
+                  SizedBox(height: screenHeight * 0.025),
+                  ElevatedButton.icon(
+                    onPressed: signInWithGoogle,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      padding:
+                          EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        side: const BorderSide(color: Colors.grey),
                       ),
-                      icon: Image.asset("assets/png/GoogleIcon.png",
-                          width: iconSize),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.black,
-                        backgroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(
-                          vertical: screenHeight * 0.02,
-                          horizontal: screenWidth * 0.1,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          side: const BorderSide(color: Colors.grey),
-                        ),
+                    ),
+                    icon: Image.asset("assets/png/GoogleIcon.png",
+                        width: iconSize),
+                    label: Text(
+                      'Sign in with Google',
+                      style: TextStyle(
+                        fontSize: fontSizeButton,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
                     ),
                   ),

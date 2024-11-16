@@ -193,7 +193,7 @@
 //   }
 // }
 
-import 'package:caresync/Tejas/AdminSide/Homescreen.dart';
+import 'package:caresync/Tejas/AdminSide/AdminHomescreen.dart';
 import 'package:flutter/material.dart';
 
 class AdminSignInPage extends StatefulWidget {
@@ -204,10 +204,10 @@ class AdminSignInPage extends StatefulWidget {
 }
 
 class _AdminSignInPageState extends State<AdminSignInPage> {
- 
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
 
   void _goToHomeScreen() {
-    
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const HomeScreen()),
     );
@@ -259,31 +259,55 @@ class _AdminSignInPageState extends State<AdminSignInPage> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: screenHeight * 0.05),
-                SizedBox(height: screenHeight * 0.05),
-                  TextFormField(
-                    
-                    decoration: InputDecoration(
-                      labelText: 'Enter your phone number',
-                      prefixIcon: Icon(Icons.phone, size: iconSize),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Enter your name',
+                    prefixIcon: Icon(Icons.person_outline, size: iconSize),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
                     ),
-                    keyboardType: TextInputType.phone,
-                    
                   ),
-                  SizedBox(height: screenHeight * 0.05),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your name';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                TextFormField(
+                  controller: _phoneController,
+                  decoration: InputDecoration(
+                    labelText: 'Enter your phone number',
+                    prefixIcon: Icon(Icons.phone, size: iconSize),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  keyboardType: TextInputType.phone,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your phone number';
+                    } else if (value.length != 10) {
+                      return 'Phone number must be 10 digits';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: screenHeight * 0.05),
                 ElevatedButton(
-                  onPressed: _goToHomeScreen,  
+                  onPressed: _goToHomeScreen,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromRGBO(14, 190, 127, 1),
-                    padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+                    padding:
+                        EdgeInsets.symmetric(vertical: screenHeight * 0.02),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
                   child: Text(
-                    'Sign In',  
+                    'Sign In',
                     style: TextStyle(
                       fontSize: fontSizeButton,
                       fontWeight: FontWeight.bold,

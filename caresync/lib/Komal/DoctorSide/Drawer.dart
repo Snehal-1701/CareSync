@@ -3,12 +3,15 @@ import 'package:caresync/Komal/DoctorSide/PatientScreen.dart';
 import 'package:caresync/Snehal/landingpage.dart';
 import 'package:caresync/Tejas/Login&Sigup/Doctor/SignIn.dart';
 import 'package:caresync/Tejas/Welcome.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'UpcomingPatientScreen.dart';
 
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends StatefulWidget {
   final bool isDarkMode;
   final VoidCallback toggleTheme;
 
@@ -17,6 +20,49 @@ class AppDrawer extends StatelessWidget {
     required this.isDarkMode,
     required this.toggleTheme,
   });
+
+  @override
+  State<AppDrawer> createState() => _AppDrawerState();
+}
+
+class _AppDrawerState extends State<AppDrawer> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  late bool _isDarkMode;
+
+  String _doctorName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDoctorData();
+    _isDarkMode = widget.isDarkMode;
+  }
+
+  Future<void> _loadDoctorData() async {
+    try {
+      User? user = _auth.currentUser; 
+      if (user != null) {
+        // Fetch patient data from Firestore
+        DocumentSnapshot snapshot = await _firestore
+            .collection('doctors') 
+            .doc(user.uid) 
+            .get();
+
+        if (snapshot.exists) {
+          Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+          setState(() {
+            _doctorName = data['name'] ;
+          });
+          
+        }
+      }
+    } catch (e) {
+      print('Error fetching doctor data: $e');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +85,8 @@ class AppDrawer extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const DoctorProfilePage()),
+                          builder: (context) => const DoctorProfilePage(),
+                        ),
                       );
                     },
                     child: CircleAvatar(
@@ -54,7 +101,7 @@ class AppDrawer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Dr. Sachin',
+                        _doctorName,
                         style: GoogleFonts.lato(
                           fontSize: width * 0.05,
                           fontWeight: FontWeight.bold,
@@ -75,16 +122,25 @@ class AppDrawer extends StatelessWidget {
                 duration: const Duration(milliseconds: 500),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: isDarkMode ? Colors.grey[800] : Colors.yellow[700],
+                  color: _isDarkMode ? Colors.grey[800] : Colors.yellow[700],
                 ),
                 padding: const EdgeInsets.all(8),
-                child: Icon(isDarkMode ? Icons.dark_mode : Icons.light_mode,
-                    color: isDarkMode ? Colors.white : Colors.black),
+                child: Icon(
+                  _isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                  color: _isDarkMode ? Colors.white : Colors.black,
+                ),
               ),
               title: Text('Dark Mode',
                   style: GoogleFonts.lato(fontSize: width * 0.045)),
-              trailing:
-                  Switch(value: isDarkMode, onChanged: (_) => toggleTheme()),
+              trailing: Switch(
+                value: _isDarkMode,
+                onChanged: (value) {
+                  setState(() {
+                    _isDarkMode = value;
+                  });
+                  widget.toggleTheme();
+                },
+              ),
             ),
             const Divider(),
             ListTile(
@@ -119,14 +175,14 @@ class AppDrawer extends StatelessWidget {
                             'Ok',
                             style: TextStyle(color: Colors.green),
                           ),
-                          onPressed: () {
+                         onPressed: () async {
                             Navigator.of(context).pop();
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const LandingPage()),
-                            );
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            await prefs.clear(); // Clear all saved data
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) => const LandingPage()));
                           },
                         ),
                       ],
@@ -159,8 +215,6 @@ class AppDrawer extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) => const UpcomingPatientScreen(
                 patient: null,
-
-                // patient: patients[0],
               ),
             ),
           );

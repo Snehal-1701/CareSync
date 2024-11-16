@@ -1,5 +1,7 @@
 import 'package:caresync/Komal/ChatApp/Messages.dart';
 import 'package:caresync/Komal/Notification.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -13,6 +15,8 @@ class DoctorHomeScreen extends StatefulWidget {
 }
 
 class _DoctorHomeScreenState extends State{
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final int _selectedIndex = 0;
   bool isDarkMode = false;
 
@@ -39,6 +43,38 @@ class _DoctorHomeScreenState extends State{
             primaryColor: Colors.blue,
             scaffoldBackgroundColor: Colors.white,
           );
+  }
+
+  String _doctorName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDoctorData();
+  }
+
+  Future<void> _loadDoctorData() async {
+    try {
+      User? user = _auth.currentUser; 
+      if (user != null) {
+        // Fetch patient data from Firestore
+        DocumentSnapshot snapshot = await _firestore
+            .collection('doctors') 
+            .doc(user.uid) 
+            .get();
+
+        if (snapshot.exists) {
+          Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+          setState(() {
+            _doctorName = data['name'] ;
+          });
+          
+        }
+      }
+    } catch (e) {
+      print('Error fetching doctor data: $e');
+    }
   }
 
   @override
@@ -191,7 +227,7 @@ class _DoctorHomeScreenState extends State{
                 style: GoogleFonts.lato(fontSize: width * 0.07,fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 4),
-              Text('Tejas',
+              Text(_doctorName,
               style: GoogleFonts.lato(fontSize: width*0.06,color: Colors.black),
               ),
             ],

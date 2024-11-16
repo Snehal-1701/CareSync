@@ -1,5 +1,6 @@
 import 'package:caresync/Komal/DoctorSide/DoctorHomeScreen.dart';
 import 'package:caresync/Tejas/Login&Sigup/Doctor/SignUp.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -18,7 +19,7 @@ class _DoctorSignInPageState extends State {
   bool _isPasswordVisible = false;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
   void _togglePasswordVisibility() {
@@ -59,41 +60,88 @@ class _DoctorSignInPageState extends State {
   //   }
   // }
 
+  // Future<void> _signIn() async {
+  //   if (_doctorformKey.currentState!.validate()) {
+  //     try {
+  //       final email = _dphoneEmailController.text.trim();
+  //       final password = _dpasswordController.text.trim();
+
+  //       // Firebase Authentication Sign-In
+  //       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+  //         email: email,
+  //         password: password,
+  //       );
+  //       print('User Signed In: ${userCredential.user?.email}');
+
+  //       // Navigate to DoctorHomeScreen
+  //       if (context.mounted) {
+  //         Navigator.of(context).pushReplacement(
+  //           MaterialPageRoute(builder: (context) => const DoctorHomeScreen()),
+  //         );
+  //       }
+  //     } on FirebaseAuthException catch (e) {
+  //       // Handle Firebase errors
+  //       print('FirebaseAuthException: ${e.code}');
+  //       if (e.code == 'user-not-found') {
+  //         _showSnackbar(
+  //           "No account found. Please create a new account to get started.",
+  //         );
+  //       } else if (e.code == 'wrong-password') {
+  //         _showSnackbar("Incorrect password. Please try again.");
+  //       } else {
+  //         _showSnackbar("Authentication failed: ${e.message}");
+  //       }
+  //     } catch (e) {
+  //       // Handle any other errors
+  //       print('Exception: $e');
+  //       _showSnackbar("An error occurred. Please try again.");
+  //     }
+  //   }
+  // }
+
   Future<void> _signIn() async {
     if (_doctorformKey.currentState!.validate()) {
       try {
         final email = _dphoneEmailController.text.trim();
         final password = _dpasswordController.text.trim();
 
-        // Firebase Authentication Sign-In
-        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        final UserCredential userCredential =
+            await _auth.signInWithEmailAndPassword(
           email: email,
           password: password,
         );
-        print('User Signed In: ${userCredential.user?.email}');
 
-        // Navigate to DoctorHomeScreen
-        if (context.mounted) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const DoctorHomeScreen()),
-          );
+        final User? user = userCredential.user;
+
+        if (user != null) {
+          // Fetching user role from the 'doctors' section in Firestore
+          final DocumentSnapshot snapshot =
+              await _firestore.collection('doctors').doc(user.uid).get();
+
+          if (snapshot.exists) {
+            // User is authenticated as a doctor
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                  builder: (context) => const DoctorHomeScreen()),
+            );
+          } else {
+            // Not a doctor account
+            _auth.signOut();
+            _showSnackbar(
+                "This account is not registered as a doctor. Please check your credentials.");
+          }
         }
       } on FirebaseAuthException catch (e) {
-        // Handle Firebase errors
-        print('FirebaseAuthException: ${e.code}');
         if (e.code == 'user-not-found') {
           _showSnackbar(
-            "No account found. Please create a new account to get started.",
-          );
+              "No doctor account found. Please create a new account to get started.");
         } else if (e.code == 'wrong-password') {
           _showSnackbar("Incorrect password. Please try again.");
         } else {
-          _showSnackbar("Authentication failed: ${e.message}");
+          _showSnackbar("Sign-in failed: ${e.message}");
         }
       } catch (e) {
-        // Handle any other errors
-        print('Exception: $e');
-        _showSnackbar("An error occurred. Please try again.");
+        _showSnackbar("Sign-in failed: ${e.toString()}");
       }
     }
   }
@@ -191,7 +239,7 @@ class _DoctorSignInPageState extends State {
                   TextFormField(
                     controller: _dphoneEmailController,
                     decoration: InputDecoration(
-                      labelText: 'Enter your phone/email',
+                      labelText: 'Enter your email',
                       prefixIcon: Icon(Icons.email, size: iconSize),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
@@ -199,7 +247,7 @@ class _DoctorSignInPageState extends State {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your phone or email';
+                        return 'Please enter your email';
                       }
                       return null;
                     },
@@ -300,7 +348,7 @@ class _DoctorSignInPageState extends State {
                   SizedBox(height: screenHeight * 0.04),
                   Center(
                     child: ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: signInWithGoogle,
                       label: Text(
                         'Sign In with Google',
                         style: TextStyle(fontSize: fontSizeButton),

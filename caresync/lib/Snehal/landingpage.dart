@@ -1,3 +1,5 @@
+import 'package:caresync/Tejas/AdminSide/AdminSignInPage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:caresync/Tejas/Login&Sigup/Doctor/SignIn.dart';
 import 'package:caresync/Tejas/Login&Sigup/Patient/SignIn.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +13,11 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
- 
+  Future<void> _saveUserType(String userType) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userType', userType); // Save user type
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +38,7 @@ class _LandingPageState extends State<LandingPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset("assets/png/images/logo.png",height:200,width:200),
+            Image.asset("assets/png/images/logo.png", height: 200, width: 200),
             Text(
               "CareSync",
               style: GoogleFonts.rubik(
@@ -58,46 +64,72 @@ class _LandingPageState extends State<LandingPage> {
               ),
             ),
             GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => const PatientSignInPage()));
+              onTap: () async {
+                await _saveUserType('patient'); // Save as patient
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => const PatientSignInPage()));
               },
               child: Container(
-                padding: EdgeInsets.symmetric(vertical:10,horizontal:15),
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
                   color: const Color.fromRGBO(14, 190, 126, 1),
                 ),
                 child: Text(
                   "Patient",
-                style: GoogleFonts.rubik(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white,
-                ),
+                  style: GoogleFonts.rubik(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
-
             GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const DoctorSignInPage()));
+              onTap: () async {
+                await _saveUserType('doctor'); // Save as doctor
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => const DoctorSignInPage()));
               },
               child: Container(
                 margin: const EdgeInsets.all(10),
-                padding: const EdgeInsets.symmetric(vertical:10,horizontal:15),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
                   color: const Color.fromRGBO(14, 190, 126, 1),
                 ),
                 child: Text(
                   "Doctor",
-                style: GoogleFonts.rubik(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white,
+                  style: GoogleFonts.rubik(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white,
+                  ),
                 ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () async {
+                await _saveUserType('admin'); // save as admin
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => const AdminSignInPage()));
+              },
+              child: Container(
+                margin: const EdgeInsets.all(10),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: const Color.fromRGBO(14, 190, 126, 1),
+                ),
+                child: Text(
+                  "Admin",
+                  style: GoogleFonts.rubik(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),

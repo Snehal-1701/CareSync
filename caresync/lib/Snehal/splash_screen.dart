@@ -1,9 +1,12 @@
-import 'package:caresync/Snehal/landingpage.dart';
-import 'package:caresync/Tejas/Welcome.dart';
+import 'package:caresync/Tejas/AdminSide/AdminHomescreen.dart';
+import 'package:caresync/Tejas/AdminSide/AdminSignInPage.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'appointment/book_appointment.dart';
+import 'package:caresync/Snehal/landingpage.dart';
+import 'package:caresync/Tejas/Login&Sigup/Patient/SignIn.dart';
+import 'package:caresync/Tejas/Login&Sigup/Doctor/SignIn.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -18,23 +21,40 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-    Future.delayed(const Duration(seconds: 5), () {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) =>  LandingPage()));
-    }
-    );
+
+    _checkLoginStatus();
   }
 
-  // @override
-  // void dispose() {
-  //   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
-  // }
+  Future<void> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userType = prefs.getString('userType'); // Check stored user type
+
+    Future.delayed(const Duration(seconds: 5), () {
+      if (userType == 'patient') {
+        // Redirect to Patient Home Screen
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const PatientSignInPage()));
+      } else if (userType == 'doctor') {
+        // Redirect to Doctor Home Screen
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const DoctorSignInPage()));
+      } else if (userType == 'admin') {
+        // Redirect to Admin Home Screen
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const AdminSignInPage()));
+      } else {
+        // Redirect to Landing Page
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const LandingPage()));
+      }
+    });
+  }
 
   @override
   void dispose() {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: SystemUiOverlay.values);
-    super.dispose(); // Always call super.dispose() at the end of this method
+    super.dispose();
   }
 
   @override

@@ -56,7 +56,7 @@ class _DoctorSignUpPageState extends State {
           'phone': _dphoneController.text.trim(),
           'email': _demailController.text.trim(),
           'gender': _dselectedGender,
-          'specialization': _dspecializationController.text.trim(),
+          'specialization': _dselectedSpecialization,
           'cliniclocation': _dclinicController.text.trim(),
           'createdAt': DateTime.now(),
         });
