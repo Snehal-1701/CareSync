@@ -118,7 +118,7 @@ class _AyurvedaGridScreenState extends State<AyurvedaGridScreen> {
             
                     Text(
                       'Ayurveda Items',
-                      style: GoogleFonts.rubik(
+                      style: GoogleFonts.poppins(
                         fontSize: screenWidth * 0.07,
                         fontWeight: FontWeight.w600,
                       ),

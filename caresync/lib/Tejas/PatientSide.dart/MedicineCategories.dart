@@ -102,8 +102,8 @@ class _ProductCategoriesState extends State<ProductCategories> {
                         Navigator.pop(context);
                       },
                       child: Container(
-                          height: 45,
-                          width: 45,
+                          height: screenWidth * 0.1,
+                          width: screenWidth * 0.1,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(17),
                             color: Colors.white,
@@ -118,7 +118,7 @@ class _ProductCategoriesState extends State<ProductCategories> {
                     SizedBox(width: screenWidth*0.05,),
                     Text(
                       'Medicine Categories',
-                      style: GoogleFonts.rubik(
+                      style: GoogleFonts.poppins(
                         fontSize: screenWidth * 0.07,
                         fontWeight: FontWeight.w600,
                       ),

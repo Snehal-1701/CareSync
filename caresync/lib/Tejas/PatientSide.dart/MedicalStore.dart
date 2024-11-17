@@ -127,7 +127,7 @@ class _MedicalStore extends State<MedicalStore> {
                     
                     Text(
                       'Medical Stores',
-                      style: GoogleFonts.rubik(
+                      style: GoogleFonts.poppins(
                         fontSize: screenWidth * 0.07,
                         fontWeight: FontWeight.w600,
                       ),

@@ -1,4 +1,3 @@
-import 'package:caresync/Tejas/AdminSide/AdminHomescreen.dart';
 import 'package:caresync/Tejas/AdminSide/AdminSignInPage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -80,7 +79,7 @@ class _SplashScreenState extends State<SplashScreen>
             Image.asset("assets/png/images/logo.png"),
             Text(
               "CareSync",
-              style: GoogleFonts.rubik(
+              style: GoogleFonts.poppins(
                 fontSize: 45,
                 fontWeight: FontWeight.w400,
                 color: const Color.fromRGBO(14, 190, 126, 1),

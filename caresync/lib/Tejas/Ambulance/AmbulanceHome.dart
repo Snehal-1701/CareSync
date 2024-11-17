@@ -1,12 +1,30 @@
-import 'package:caresync/Tejas/Ambulance/AmbulanceList.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:caresync/Tejas/Ambulance/AmbulanceList.dart';
 
-class AmbulanceBookingHome extends StatelessWidget {
-  const AmbulanceBookingHome({super.key});
+class AmbulanceBookingHome extends StatefulWidget {
+  @override
+  _AmbulanceBookingHomeState createState() => _AmbulanceBookingHomeState();
+}
 
-  
+class _AmbulanceBookingHomeState extends State<AmbulanceBookingHome> {
+  final DatabaseReference _ambulancesRef = FirebaseDatabase.instance.ref().child('CareSync/ambulances');
+  List<String> _ambulanceTypes = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Fetch ambulance types (Basic Life Support, etc.) from Firebase
+    _ambulancesRef.onChildAdded.listen((event) {
+      setState(() {
+        _ambulanceTypes.add(event.snapshot.key!);
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -14,7 +32,7 @@ class AmbulanceBookingHome extends StatelessWidget {
 
     double padding = screenWidth * 0.04;
     double carouselHeight = screenHeight * 0.25;
-    double ambulanceTypeTextSize = screenWidth * 0.05;
+    double textSize = screenWidth * 0.05;
 
     return Scaffold(
       body: Container(
@@ -29,6 +47,7 @@ class AmbulanceBookingHome extends StatelessWidget {
           padding: EdgeInsets.fromLTRB(padding, screenHeight * 0.06, padding, 0),
           child: Column(
             children: [
+              // Back button and title
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -51,73 +70,96 @@ class AmbulanceBookingHome extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Book Ambulance',
-                    style: GoogleFonts.rubik(
-                      fontSize: screenWidth * 0.07,
+                    'Ambulance Booking',
+                    style: GoogleFonts.poppins(
+                      fontSize: screenWidth * 0.06,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  SizedBox(width: screenWidth * 0.1),
+                  SizedBox(width: screenWidth * 0.1), // Spacer to align
                 ],
               ),
-              SizedBox(height: screenHeight * 0.02),
-              Expanded(
-                flex: 3,
-                child: CarouselSlider(
-                  items: [
-                    carouselItem("assets/png/AmulanceCarasiousal/AmulanceCarasiousal1.png", screenWidth, screenHeight),
-                    carouselItem("assets/png/AmulanceCarasiousal/AmulanceCarasiousal2.png", screenWidth, screenHeight),
-                    carouselItem("assets/png/AmulanceCarasiousal/AmulanceCarasiousal3.png", screenWidth, screenHeight),
-                  ],
-                  options: CarouselOptions(
-                    height: carouselHeight,
-                    enlargeCenterPage: true,
-                    autoPlay: true,
-                    autoPlayInterval: const Duration(seconds: 3),
-                    autoPlayAnimationDuration: const Duration(milliseconds: 800),
-                  ),
+              SizedBox(height: screenHeight * 0.04),
+
+              // Carousel slider
+              CarouselSlider(
+                items: [
+                  carouselItem("assets/png/AmulanceCarasiousal/AmulanceCarasiousal1.png", screenWidth),
+                  carouselItem("assets/png/AmulanceCarasiousal/AmulanceCarasiousal2.png", screenWidth),
+                  carouselItem("assets/png/AmulanceCarasiousal/AmulanceCarasiousal3.png", screenWidth),
+                ],
+                options: CarouselOptions(
+                  height: carouselHeight,
+                  enlargeCenterPage: true,
+                  autoPlay: true,
+                  autoPlayInterval: const Duration(seconds: 3),
+                  autoPlayAnimationDuration: const Duration(milliseconds: 800),
                 ),
               ),
-              SizedBox(height: screenHeight * 0.02),
+              SizedBox(height: screenHeight * 0.06),
+
+              // Title for ambulance types
+              Text(
+                'Select Ambulance Type',
+                style: TextStyle(
+                  fontSize: textSize,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: screenHeight * 0.01),
+
+              // List of ambulance types
               Expanded(
-                flex: 5,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: padding),
-                      child: Text(
-                        "Select Ambulance Type",
-                        style: TextStyle(
-                          fontSize: ambulanceTypeTextSize,
-                          fontWeight: FontWeight.bold,
+                child: ListView.builder(
+                  itemCount: _ambulanceTypes.length,
+                  itemBuilder: (context, index) {
+                    String ambulanceType = _ambulanceTypes[index];
+
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AmbulanceListScreen(type: ambulanceType),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: screenHeight * 0.02),
+                        padding: EdgeInsets.all(screenWidth * 0.04),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(screenWidth * 0.04),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.3),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.local_hospital,
+                              color: Colors.redAccent,
+                              size: screenWidth * 0.1,
+                            ),
+                            SizedBox(width: screenWidth * 0.05),
+                            Expanded(
+                              child: Text(
+                                ambulanceType,
+                                style: TextStyle(
+                                  fontSize: textSize,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    SizedBox(height: screenHeight * 0.02),
-                    Expanded(
-                      child: ListView(
-                        padding: EdgeInsets.symmetric(horizontal: padding),
-                        children: [
-                          AnimatedAmbulanceTypeCard(
-                            context: context,
-                            type: 'Basic Life Support Ambulance',
-                            icon: Icons.local_hospital,
-                          ),
-                          AnimatedAmbulanceTypeCard(
-                            context: context,
-                            type: 'Advanced Life Support Ambulance',
-                            icon: Icons.medical_services,
-                          ),
-                          AnimatedAmbulanceTypeCard(
-                            context: context,
-                            type: 'ICU Ambulance',
-                            icon: Icons.health_and_safety,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
             ],
@@ -127,7 +169,7 @@ class AmbulanceBookingHome extends StatelessWidget {
     );
   }
 
-  Widget carouselItem(String imagePath, double screenWidth, double screenHeight) {
+  Widget carouselItem(String imagePath, double screenWidth) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
       decoration: BoxDecoration(
@@ -139,82 +181,6 @@ class AmbulanceBookingHome extends StatelessWidget {
           imagePath,
           fit: BoxFit.fill,
           width: screenWidth,
-          height: screenHeight*0.001,
-        ),
-      ),
-    );
-  }
-}
-
-class AnimatedAmbulanceTypeCard extends StatefulWidget {
-  final BuildContext context;
-  final String type;
-  final IconData icon;
-
-  const AnimatedAmbulanceTypeCard({super.key, 
-    required this.context,
-    required this.type,
-    required this.icon,
-  });
-
-  @override
-  _AnimatedAmbulanceTypeCardState createState() =>
-      _AnimatedAmbulanceTypeCardState();
-}
-
-class _AnimatedAmbulanceTypeCardState extends State<AnimatedAmbulanceTypeCard> {
-  bool isHovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    double iconSize = screenWidth * 0.1;
-    double textSize = screenWidth * 0.04;
-
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AmbulanceListScreen(type: widget.type),
-          ),
-        );
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        height: screenWidth * 0.2,
-        margin: EdgeInsets.only(bottom: screenWidth * 0.04),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(screenWidth * 0.04),
-          boxShadow: [
-            BoxShadow(
-              color: isHovered
-                  ? Colors.redAccent.withOpacity(0.3)
-                  : Colors.grey.withOpacity(0.3),
-              blurRadius: isHovered ? screenWidth * 0.03 : screenWidth * 0.015,
-              offset: Offset(0, isHovered ? screenWidth * 0.03 : screenWidth * 0.015),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(screenWidth * 0.04),
-          child: Row(
-            children: [
-              Icon(widget.icon, size: iconSize, color: Colors.redAccent),
-              SizedBox(width: screenWidth * 0.05),
-              Expanded(
-                child: Text(
-                  widget.type,
-                  style: TextStyle(
-                    fontSize: textSize,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

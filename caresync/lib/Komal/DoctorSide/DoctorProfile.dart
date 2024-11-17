@@ -1,6 +1,10 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 
 class DoctorProfilePage extends StatefulWidget {
   const DoctorProfilePage({super.key});
@@ -12,8 +16,9 @@ class DoctorProfilePage extends StatefulWidget {
 class _DoctorProfilePageState extends State<DoctorProfilePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  
-  // Controllers for text fields to manage their state
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+
+  // Controllers for text fields
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -21,76 +26,119 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
   final TextEditingController specializationController = TextEditingController();
   final TextEditingController dobController = TextEditingController();
 
-  bool _isEditable = false; // To track if the fields should be editable
-  bool _isLoading = false; // To track loading state for save button
+  bool _isEditable = false;
+  bool _isLoading = false;
+
+  File? _selectedImage;
+  String? _profileImageUrl;
 
   @override
   void initState() {
     super.initState();
-    _loadPatientData();
+    _loadDoctorData();
   }
 
-  Future<void> _loadPatientData() async {
+  Future<void> _loadDoctorData() async {
     try {
-      User? user = _auth.currentUser; 
+      User? user = _auth.currentUser;
       if (user != null) {
-        // Fetch patient data from Firestore
         DocumentSnapshot snapshot = await _firestore
-            .collection('doctors') 
-            .doc(user.uid) 
+            .collection('CareSync')
+            .doc('doctors')
+            .collection('accounts')
+            .doc(user.uid)
             .get();
 
         if (snapshot.exists) {
           Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-          // Update the controllers with the fetched data
+          // Update controllers
           fullNameController.text = data['name'] ?? '';
           phoneController.text = data['phone'] ?? '';
           emailController.text = data['email'] ?? '';
           qualificationController.text = data['qualification'] ?? '';
           specializationController.text = data['specialization'] ?? '';
           dobController.text = data['dob'] ?? '';
+          _profileImageUrl = data['profileImage'] ?? null;
         }
       }
     } catch (e) {
-      print('Error fetching patient data: $e');
+      print('Error fetching doctor data: $e');
+    }
+  }
+
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _selectedImage = File(image.path);
+      });
+    }
+  }
+
+  Future<String?> _uploadImage(File imageFile) async {
+    try {
+      User? user = _auth.currentUser;
+      if (user != null) {
+        String filePath = 'CareSync/${user.uid}/profile.jpg';
+        TaskSnapshot snapshot = await _storage.ref(filePath).putFile(imageFile);
+        return await snapshot.ref.getDownloadURL();
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
+      return null;
     }
   }
 
   Future<void> _saveChanges() async {
     setState(() {
-      _isLoading = true; 
+      _isLoading = true;
     });
 
     try {
       User? user = _auth.currentUser;
       if (user != null) {
-        // Update Firestore with the new data
-        await _firestore.collection('patients').doc(user.uid).update({
+        String? imageUrl;
+        if (_selectedImage != null) {
+          imageUrl = await _uploadImage(_selectedImage!);
+        }
+
+        await _firestore
+            .collection('CareSync')
+            .doc('doctors')
+            .collection('accounts')
+            .doc(user.uid)
+            .update({
           'name': fullNameController.text,
-          'dob': dobController.text,
+          'phone': phoneController.text,
+          'email': emailController.text,
           'qualification': qualificationController.text,
+          'specialization': specializationController.text,
+          'dob': dobController.text,
+          'profileImage': imageUrl ?? _profileImageUrl,
         });
 
-        // Display a success message
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Changes saved successfully!")),
         );
+
+        setState(() {
+          _profileImageUrl = imageUrl ?? _profileImageUrl;
+        });
       }
     } catch (e) {
-      // Handle errors
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Error saving changes")),
       );
     } finally {
       setState(() {
         _isLoading = false;
-        _isEditable = false; // Hide the save button after saving
+        _isEditable = false;
       });
     }
   }
 
-  // Function to show the date picker
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -98,13 +146,12 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
-    if (pickedDate != null && pickedDate != DateTime.now()) {
+    if (pickedDate != null) {
       setState(() {
-        dobController.text = "${pickedDate.toLocal()}".split(' ')[0]; 
+        dobController.text = "${pickedDate.toLocal()}".split(' ')[0];
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -129,56 +176,63 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.only(top: 10.0, left: 16.0, right: 16.0),
+          padding: EdgeInsets.fromLTRB(16.0, screenHeight * 0.05, 16.0, 0),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Custom AppBar
+                // Profile header and back button
                 Row(
                   children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back, color: Colors.teal[700]),
-                      onPressed: () => Navigator.pop(context),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        height: screenWidth * 0.1,
+                        width: screenWidth * 0.1,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(17),
+                          color: Colors.white,
+                        ),
+                        child: const Icon(
+                          size: 30,
+                          Icons.arrow_back_ios_new_rounded,
+                          color: Colors.grey,
+                        ),
+                      ),
                     ),
-                    SizedBox(height: screenWidth * 0.3),
-                    Expanded(
+                    SizedBox(width: screenWidth * 0.25),
+                    Center(
                       child: Text(
                         "Profile",
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.teal[700],
-                          fontSize: screenWidth * 0.05,
-                          fontWeight: FontWeight.bold,
+                        style: GoogleFonts.poppins(
+                          fontSize: screenWidth * 0.07,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
-                    SizedBox(width: screenWidth * 0.1),
                   ],
                 ),
-                SizedBox(height: screenHeight * 0.0001),
+                const SizedBox(height: 20),
 
-                // Profile picture with edit icon
+                // Profile Image with Edit Icon
                 Stack(
                   alignment: Alignment.bottomRight,
                   children: [
-                    Container(
-                      width: screenWidth * 0.2,
-                      height: screenWidth * 0.2,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Colors.green.shade400, Colors.green.shade200],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Icon(
-                          Icons.person,
-                          size: screenWidth * 0.1,
-                          color: Colors.white,
-                        ),
+                    GestureDetector(
+                      onTap: _pickImage,
+                      child: CircleAvatar(
+                        radius: screenWidth * 0.1,
+                        backgroundImage: _selectedImage != null
+                            ? FileImage(_selectedImage!)
+                            : _profileImageUrl != null
+                                ? NetworkImage(_profileImageUrl!)
+                                : null,
+                        child: _profileImageUrl == null && _selectedImage == null
+                            ? Icon(Icons.person, size: screenWidth * 0.1)
+                            : null,
                       ),
                     ),
                     Positioned(
@@ -213,144 +267,66 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
                     ),
                   ],
                 ),
-                SizedBox(height: screenHeight * 0.02),
+                const SizedBox(height: 20),
 
-                // TextFields for user input
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
-                  child: TextField(
-                    controller: fullNameController,
-                    enabled: _isEditable,
-                    decoration: InputDecoration(
-                      labelText: "Full Name",
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23),
-                        //borderSide: BorderSide.none,
-                      ),
-                    ),
-                    style: TextStyle(fontSize: screenWidth * 0.04),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
-                  child: TextField(
-                    controller: phoneController,
-                    enabled: false,
-                    decoration: InputDecoration(
-                      labelText: "Phone Number",
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23),
-                        //borderSide: BorderSide.none,
-                      ),
-                    ),
-                    style: TextStyle(fontSize: screenWidth * 0.04),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
-                  child: TextField(
-                    controller: emailController,
-                    enabled: false,
-                    decoration: InputDecoration(
-                      labelText: "Email",
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23),
-                        //borderSide: BorderSide.none,
-                      ),
-                    ),
-                    style: TextStyle(fontSize: screenWidth * 0.04),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
-                  child: TextField(
-                    controller: qualificationController,
-                    enabled: _isEditable,
-                    decoration: InputDecoration(
-                      labelText: "Qualification",
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23),
-                        //borderSide: BorderSide.none,
-                      ),
-                    ),
-                    style: TextStyle(fontSize: screenWidth * 0.04),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
-                  child: TextField(
-                    controller: specializationController,
-                    enabled: false,
-                    decoration: InputDecoration(
-                      labelText: "Specialization",
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23),
-                        //borderSide: BorderSide.none,
-                      ),
-                    ),
-                    style: TextStyle(fontSize: screenWidth * 0.04),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
-                  child: GestureDetector(
-                    onTap: () => _selectDate(context), 
-                    child: AbsorbPointer(
-                      child: TextField(
-                        controller: dobController,
-                        enabled: _isEditable,
-                        decoration: InputDecoration(
-                          labelText: "Date of Birth",
-                          filled: true,
-                          fillColor: Colors.black12,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(23),
-                            //borderSide: BorderSide.none,
-                          ),
-                        ),
-                        style: TextStyle(fontSize: screenWidth * 0.04),
-                      ),
-                    ),
-                  ),
+                // Text Fields
+                _buildTextField("Full Name", fullNameController),
+                const SizedBox(height: 10,),
+                _buildTextField("Phone Number", phoneController),
+                const SizedBox(height: 10,),
+                _buildTextField("Email", emailController, readOnly: true),
+                const SizedBox(height: 10,),
+                _buildTextField("Qualification", qualificationController),
+                const SizedBox(height: 10,),
+                _buildTextField("Specialization", specializationController),
+                const SizedBox(height: 10,),
+                GestureDetector(
+                  onTap: () => _selectDate(context),
+                  child: _buildTextField("Date of Birth", dobController, readOnly: true),
                 ),
 
-                // Save button
-                if (_isEditable && !_isLoading)
-                  ElevatedButton(
-                    onPressed: _saveChanges,
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth * 0.3, vertical: screenHeight * 0.02),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        
-                      ),
-                      backgroundColor: const Color.fromRGBO(14, 190, 127, 1),
-                    ),
-                    child: const Text(
-                      "Save Changes",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                if (_isLoading) CircularProgressIndicator(),
-                
+                const SizedBox(height: 20),
+
+                // Save Changes Button or Loading Spinner
+                _isLoading
+                    ? const CircularProgressIndicator()
+                    : _isEditable
+                        ? ElevatedButton(
+                            onPressed: _saveChanges,
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: screenWidth * 0.3,
+                                  vertical: screenHeight * 0.02),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              backgroundColor: const Color.fromRGBO(14, 190, 127, 1),
+                            ),
+                            child: const Text(
+                              "Save Changes",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField(String label, TextEditingController controller,
+      {bool readOnly = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextField(
+        controller: controller,
+        readOnly: readOnly || !_isEditable,
+        decoration: InputDecoration(
+          labelText: label,
+          border: const OutlineInputBorder(),
         ),
       ),
     );

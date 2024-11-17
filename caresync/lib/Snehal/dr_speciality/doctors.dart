@@ -19,7 +19,7 @@ class Doctor {
 class DoctorListScreen extends StatefulWidget {
   final String drSpeciality;
 
-  DoctorListScreen({required this.drSpeciality});
+  const DoctorListScreen({super.key, required this.drSpeciality});
 
   @override
   _DoctorListScreenState createState() => _DoctorListScreenState();
@@ -173,8 +173,8 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                       Navigator.pop(context);
                     },
                     child: Container(
-                        height: 45,
-                        width: 45,
+                        height: screenWidth * 0.1, 
+                        width: screenWidth * 0.1,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(17),
                           color: Colors.white,
@@ -186,11 +186,11 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                         )),
                   ),
                   SizedBox(
-                    width: screenWidth * 0.05,
+                    width: screenWidth * 0.17,
                   ),
                   Text(
                     widget.drSpeciality,
-                    style: GoogleFonts.rubik(
+                    style: GoogleFonts.poppins(
                       fontSize: screenWidth * 0.07,
                       fontWeight: FontWeight.w600,
                     ),
@@ -243,25 +243,25 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                                     children: [
                                       Text(
                                         doctor.name,
-                                        style: GoogleFonts.rubik(
+                                        style: GoogleFonts.poppins(
                                           fontSize: screenWidth * 0.05,
                                           fontWeight: FontWeight.w500,
                                           color: Colors.black,
                                         ),
                                       ),
-                                      SizedBox(height: 4),
+                                      const SizedBox(height: 4),
                                       Text(
                                         doctor.clinicName,
-                                        style: GoogleFonts.rubik(
+                                        style: GoogleFonts.poppins(
                                           fontSize: screenWidth * 0.04,
                                           fontWeight: FontWeight.w400,
                                           color: Colors.black,
                                         ),
                                       ),
-                                      SizedBox(height: 4),
+                                      const SizedBox(height: 4),
                                       Text(
                                         doctor.specialty,
-                                        style: GoogleFonts.rubik(
+                                        style: GoogleFonts.poppins(
                                           fontSize: screenWidth * 0.04,
                                           fontWeight: FontWeight.w400,
                                           color: Colors.grey,
@@ -307,7 +307,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                               ),
                               child: Text(
                                 'Book Appointment',
-                                style: GoogleFonts.rubik(
+                                style: GoogleFonts.poppins(
                                   fontSize: screenWidth * 0.045,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.white,

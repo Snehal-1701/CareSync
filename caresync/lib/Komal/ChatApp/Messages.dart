@@ -64,8 +64,8 @@ class _MessageScreenState extends State<MessageScreen> {
                           Navigator.pop(context);
                         },
                         child: Container(
-                          height: screenWidth * 0.12,
-                          width: screenWidth * 0.12,
+                          height: screenWidth * 0.1,
+                          width: screenWidth * 0.1,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(screenWidth * 0.04),
                             color: Colors.white,
@@ -78,7 +78,7 @@ class _MessageScreenState extends State<MessageScreen> {
                       ),
                       Text(
                         'Messages',
-                        style: GoogleFonts.rubik(
+                        style: GoogleFonts.poppins(
                           fontSize: screenWidth * 0.07,
                           fontWeight: FontWeight.w600,
                         ),
@@ -139,7 +139,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                     children: [
                                       Text(
                                         chat["name"]!,
-                                        style: GoogleFonts.rubik(
+                                        style: GoogleFonts.poppins(
                                           fontSize: screenWidth * 0.045,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -147,7 +147,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                       SizedBox(height: screenHeight * 0.005),
                                       Text(
                                         chat["message"]!,
-                                        style: GoogleFonts.rubik(
+                                        style: GoogleFonts.poppins(
                                           fontSize: screenWidth * 0.04,
                                           color: Colors.black54,
                                         ),
@@ -157,7 +157,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                 ),
                                 Text(
                                   chat["time"]!,
-                                  style: GoogleFonts.rubik(
+                                  style: GoogleFonts.poppins(
                                     fontSize: screenWidth * 0.035,
                                     color: Colors.black54,
                                   ),

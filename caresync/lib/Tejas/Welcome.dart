@@ -50,7 +50,7 @@
 //             children: [
 //               Text(
 //                 'Choose Login Type',
-//                 style: GoogleFonts.rubik(
+//                 style: GoogleFonts.poppins(
 //                   fontSize: screenWidth * 0.06,
 //                   fontWeight: FontWeight.bold,
 //                   color: Colors.black,
@@ -119,7 +119,7 @@
 //             const SizedBox(width: 10),
 //             Text(
 //               title,
-//               style: GoogleFonts.rubik(
+//               style: GoogleFonts.poppins(
 //                 color: Colors.white,
 //                 fontSize: screenWidth * 0.05,
 //                 fontWeight: FontWeight.w500,
@@ -138,7 +138,7 @@ import 'package:flutter/material.dart';
 
 
 class LoginSelectionScreen extends StatelessWidget {
-  const LoginSelectionScreen({Key? key}) : super(key: key);
+  const LoginSelectionScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -68,7 +68,7 @@ class _AyurvedaDetailScreenState extends State<AyurvedaDetailScreen> {
                       
                       Text(
                         'Detail Info',
-                        style: GoogleFonts.rubik(
+                        style: GoogleFonts.poppins(
                           fontSize: screenWidth * 0.07,
                           fontWeight: FontWeight.w600,
                         ),

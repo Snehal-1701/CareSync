@@ -34,6 +34,7 @@ class _WishlistState extends State<Wishlist> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     double titleFontSize = screenWidth * 0.07;
     double itemFontSize = screenWidth * 0.04;
     double imageHeight = screenWidth * 0.15;
@@ -49,13 +50,14 @@ class _WishlistState extends State<Wishlist> {
                 colors: [
                   Color.fromRGBO(97, 206, 255, 220),
                   Colors.white,
+                  Colors.white,
                   Color.fromRGBO(14, 190, 126, 220),
                 ],
               ),
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(16.0, screenWidth * 0.15, 16, 0),
+            padding: EdgeInsets.fromLTRB(16.0, screenHeight * 0.06, 16, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -66,8 +68,8 @@ class _WishlistState extends State<Wishlist> {
                         Navigator.pop(context);
                       },
                       child: Container(
-                          height: 45,
-                          width: 45,
+                          height: screenWidth * 0.1,
+                          width: screenWidth * 0.1,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(17),
                             color: Colors.white,
@@ -82,7 +84,7 @@ class _WishlistState extends State<Wishlist> {
                     SizedBox(width: screenWidth*0.23,),
                     Text(
                       'Wishlist',
-                      style: GoogleFonts.rubik(
+                      style: GoogleFonts.poppins(
                         fontSize: titleFontSize,
                         fontWeight: FontWeight.w600,
                       ),

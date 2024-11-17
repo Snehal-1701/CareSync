@@ -2,7 +2,6 @@ import 'package:caresync/Snehal/appointment/book_appointment.dart';
 import 'package:caresync/Tejas/PatientSide.dart/PatientHomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:caresync/Snehal/medical_records/medical_record_screen_1.dart';
 
 class SelectTime extends StatefulWidget {
   final String doctorName;
@@ -11,7 +10,7 @@ class SelectTime extends StatefulWidget {
   final String doctorImage;
 
   // Constructor to accept doctor data
-  SelectTime({
+  const SelectTime({super.key, 
     required this.doctorName,
     required this.clinicName,
     required this.specialty,
@@ -61,8 +60,8 @@ class _SelectTimeState extends State<SelectTime> {
                       Navigator.pop(context);
                     },
                     child: Container(
-                        height: 45,
-                        width: 45,
+                        height: screenWidth * 0.1, 
+                        width: screenWidth * 0.1,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(17),
                           color: Colors.white,
@@ -73,12 +72,12 @@ class _SelectTimeState extends State<SelectTime> {
                           color: Colors.grey,
                         )),
                   ),
-                  SizedBox(width: screenWidth * 0.05),
+                  SizedBox(width: screenWidth * 0.18),
 
                   ///TEXT
                   Text(
                     "Select Time",
-                    style: GoogleFonts.rubik(
+                    style: GoogleFonts.poppins(
                       fontSize: screenWidth * 0.065,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
@@ -128,7 +127,7 @@ class _SelectTimeState extends State<SelectTime> {
                           children: [
                             Text(
                               widget.doctorName,
-                              style: GoogleFonts.rubik(
+                              style: GoogleFonts.poppins(
                                 fontSize: screenWidth * 0.05,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black,
@@ -137,7 +136,7 @@ class _SelectTimeState extends State<SelectTime> {
                             Expanded(
                               child: Text(
                                 widget.clinicName,
-                                style: GoogleFonts.rubik(
+                                style: GoogleFonts.poppins(
                                   fontSize: screenWidth * 0.045,
                                   fontWeight: FontWeight.w400,
                                   color: Colors.grey,
@@ -148,7 +147,7 @@ class _SelectTimeState extends State<SelectTime> {
                             Expanded(
                               child: Text(
                                 widget.specialty,
-                                style: GoogleFonts.rubik(
+                                style: GoogleFonts.poppins(
                                   fontSize: screenWidth * 0.045,
                                   fontWeight: FontWeight.w400,
                                   color: Colors.grey,
@@ -175,7 +174,7 @@ class _SelectTimeState extends State<SelectTime> {
                 child: Center(
                   child: Text(
                     "Today, 23 Feb",
-                    style: GoogleFonts.rubik(
+                    style: GoogleFonts.poppins(
                       fontSize: screenWidth * 0.06,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
@@ -189,7 +188,7 @@ class _SelectTimeState extends State<SelectTime> {
                 padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
                 child: Text(
                   "Afternoon 7 slots",
-                  style: GoogleFonts.rubik(
+                  style: GoogleFonts.poppins(
                     fontSize: screenWidth * 0.06,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
@@ -216,7 +215,7 @@ class _SelectTimeState extends State<SelectTime> {
                 padding: EdgeInsets.symmetric(vertical: screenHeight * 0.03),
                 child: Text(
                   "Evening 5 slots",
-                  style: GoogleFonts.rubik(
+                  style: GoogleFonts.poppins(
                     fontSize: screenWidth * 0.06,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
@@ -253,7 +252,7 @@ class _SelectTimeState extends State<SelectTime> {
                     ),
                     child: Text(
                       "Confirm",
-                      style: GoogleFonts.rubik(
+                      style: GoogleFonts.poppins(
                         fontSize: screenWidth * 0.05,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
@@ -285,7 +284,7 @@ class _SelectTimeState extends State<SelectTime> {
       ),
       child: Text(
         time,
-        style: GoogleFonts.rubik(
+        style: GoogleFonts.poppins(
           fontSize: MediaQuery.of(context).size.width * 0.045,
           fontWeight: FontWeight.w500,
           color: selected ? Colors.white : Colors.black,
@@ -323,7 +322,7 @@ class _SelectTimeState extends State<SelectTime> {
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(
                         "Thank You !",
-                        style: GoogleFonts.rubik(
+                        style: GoogleFonts.poppins(
                             fontSize: 28,
                             fontWeight: FontWeight.w600,
                             color: Colors.black),
@@ -333,7 +332,7 @@ class _SelectTimeState extends State<SelectTime> {
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(
                         "Your Appointment Successful",
-                        style: GoogleFonts.rubik(
+                        style: GoogleFonts.poppins(
                           fontSize: 17,
                           fontWeight: FontWeight.w400,
                           color: const Color.fromRGBO(103, 114, 148, 1),
@@ -344,7 +343,7 @@ class _SelectTimeState extends State<SelectTime> {
                     Text(
                       "You booked an appointment with ${widget.doctorName} on February 21, at 02:00 PM",
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.rubik(
+                      style: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                           color: const Color.fromRGBO(103, 114, 148, 1)),
@@ -369,7 +368,7 @@ class _SelectTimeState extends State<SelectTime> {
                           ),
                           child: Text(
                             "Confirm",
-                            style: GoogleFonts.rubik(
+                            style: GoogleFonts.poppins(
                               fontSize: 20,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
@@ -386,7 +385,7 @@ class _SelectTimeState extends State<SelectTime> {
                         },
                         child: Text(
                           "Edit your appointment",
-                          style: GoogleFonts.rubik(
+                          style: GoogleFonts.poppins(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: Colors.grey,

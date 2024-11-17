@@ -1,12 +1,13 @@
-
 import 'package:caresync/Snehal/landingpage.dart';
 import 'package:caresync/Tejas/AdminSide/AddAmbulance.dart';
+import 'package:caresync/Tejas/AdminSide/AdimiJson.dart';
 import 'package:caresync/Tejas/AdminSide/AmbulancesList.dart';
-import 'package:caresync/Tejas/Welcome.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'MedicalStoresList.dart';
 import 'AddMedicalStores.dart';
-import 'ProfilePage.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,7 +17,39 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   bool isDrawerOpen = false;
+
+  String _adminName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPatientData();
+  }
+
+  Future<void> _loadPatientData() async {
+    try {
+      User? user = _auth.currentUser;
+      if (user != null) {
+        // Fetch patient data from Firestore
+        DocumentSnapshot documentSnapshot =
+          await _firestore.collection('CareSync').doc('admin').get();
+
+        if (documentSnapshot.exists) {
+          Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+
+          setState(() {
+           _adminName = data['name'] ?? 'Admin';
+          });
+        }
+      }
+    } catch (e) {
+      print('Error fetching admin data: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,12 +74,13 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          
+
           Column(
             children: [
               // Custom AppBar
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 10),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 60, horizontal: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -56,7 +90,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           isDrawerOpen = !isDrawerOpen;
                         });
                       },
-                      child: const Icon(Icons.menu, size: 30, color: Colors.black45),
+                      child: const Icon(Icons.menu,
+                          size: 30, color: Colors.black45),
                     ),
                     Text(
                       "Admin Dashboard",
@@ -66,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(width: 20), 
+                    const SizedBox(width: 20),
                   ],
                 ),
               ),
@@ -79,13 +114,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const MedicalStoresPage()),
+                          MaterialPageRoute(
+                              builder: (context) => AdminJsonManager()),
                         );
                       },
                       child: Container(
                         margin: const EdgeInsets.symmetric(vertical: 10),
                         padding: const EdgeInsets.all(20),
-                        height: 120, 
+                        height: 120,
                         width: width * 0.8,
                         decoration: BoxDecoration(
                           color: Colors.teal[200],
@@ -106,7 +142,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Icon(Icons.local_hospital, size: 40, color: Colors.white),
+                            Icon(Icons.local_hospital,
+                                size: 40, color: Colors.white),
                             Text(
                               "Medical Stores",
                               textAlign: TextAlign.center,
@@ -124,13 +161,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const AmbulancesList()),
+                          MaterialPageRoute(
+                              builder: (context) => const AmbulancesList()),
                         );
                       },
                       child: Container(
                         margin: const EdgeInsets.symmetric(vertical: 10),
                         padding: const EdgeInsets.all(20),
-                        height: 120, 
+                        height: 120,
                         width: width * 0.8,
                         decoration: BoxDecoration(
                           color: Colors.teal[200],
@@ -151,7 +189,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Icon(Icons.local_shipping, size: 40, color: Colors.white),
+                            Icon(Icons.local_shipping,
+                                size: 40, color: Colors.white),
                             Text(
                               "Ambulances",
                               style: TextStyle(
@@ -179,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 });
               },
               child: Container(
-                color: Colors.black.withOpacity(0.7), 
+                color: Colors.black.withOpacity(0.7),
               ),
             ),
 
@@ -198,24 +237,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.admin_panel_settings, size: 60, color: Colors.white),
+                          const Icon(Icons.admin_panel_settings,
+                              size: 60, color: Colors.white),
                           const SizedBox(height: 10),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const ProfilePage()),
-                              );
-                            },
-                            child: const Text(
-                              "Admin Panel",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                              ),
+                          Text(
+                            _adminName,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
                             ),
                           ),
-                         
                         ],
                       ),
                     ),
@@ -223,19 +254,23 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const AddMedicalStorePage()),
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const AddMedicalStorePage()),
                         );
                         setState(() => isDrawerOpen = false); // Close drawer
                       },
                       child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 16.0),
                         child: Row(
                           children: [
                             Icon(Icons.local_hospital, color: Colors.white),
                             SizedBox(width: 10),
                             Text(
                               "Add Medical Store",
-                              style: TextStyle(color: Colors.white, fontSize: 18),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18),
                             ),
                           ],
                         ),
@@ -245,43 +280,53 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const AddAmbulancePage()),
+                          MaterialPageRoute(
+                              builder: (context) => AddAmbulancePage()),
                         );
                         setState(() => isDrawerOpen = false); // Close drawer
                       },
                       child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 16.0),
                         child: Row(
                           children: [
                             Icon(Icons.local_shipping, color: Colors.white),
                             SizedBox(width: 10),
                             Text(
                               "Add Ambulance",
-                              style: TextStyle(color: Colors.white, fontSize: 18),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18),
                             ),
                           ],
                         ),
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const LandingPage()),
-                            );
+                      onTap: () async {
+                        SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                          await prefs.clear(); // Clears all saved data, including 'isLoggedIn'
+
+                        // Navigate back to the login screen
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LandingPage()),
+                          (route) => false, // Removes all routes
+                        );
                         setState(() => isDrawerOpen = false); // Close drawer
                       },
                       child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 16.0),
                         child: Row(
                           children: [
                             Icon(Icons.logout, color: Colors.white),
                             SizedBox(width: 10),
                             Text(
                               "Logout",
-                              style: TextStyle(color: Colors.white, fontSize: 18),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18),
                             ),
                           ],
                         ),

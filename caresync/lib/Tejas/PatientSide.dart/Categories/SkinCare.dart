@@ -157,8 +157,8 @@ class _SkinCareState extends State {
                         Navigator.pop(context);
                       },
                       child: Container(
-                          height: 45,
-                          width: 45,
+                          height: screenWidth * 0.1,
+                          width: screenWidth * 0.1,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(17),
                             color: Colors.white,
@@ -173,7 +173,7 @@ class _SkinCareState extends State {
                     SizedBox(width: screenWidth*0.2),
                     Text(
                       'Skin Care',
-                      style: GoogleFonts.rubik(
+                      style: GoogleFonts.poppins(
                         fontSize: titleFontSize,
                         fontWeight: FontWeight.w600,
                       ),

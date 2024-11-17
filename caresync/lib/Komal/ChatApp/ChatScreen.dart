@@ -39,7 +39,7 @@ class _ChatScreenState extends State<ChatScreen> {
             children: [
               Text(
                 'Choose an option',
-                style: GoogleFonts.rubik(fontSize: 16, fontWeight: FontWeight.bold),
+                style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
               ListTile(
@@ -105,8 +105,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         Navigator.pop(context);
                       },
                       child: Container(
-                        height: 45,
-                        width: 45,
+                        height: screenWidth * 0.1,
+                        width: screenWidth * 0.1,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(17),
                           color: Colors.white,
@@ -122,7 +122,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       child: Center(
                         child: Text(
                           widget.chatData['name'] ?? 'Chat',
-                          style: GoogleFonts.rubik(
+                          style: GoogleFonts.poppins(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                             fontSize: screenWidth * 0.05,
@@ -162,7 +162,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             ),
                             child: Text(
                               message["text"]!,
-                              style: GoogleFonts.rubik(
+                              style: GoogleFonts.poppins(
                                 color: isSent ? Colors.white : Colors.black87,
                                 fontSize: screenWidth * 0.04,
                               ),
@@ -172,7 +172,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                             child: Text(
                               message["time"]!,
-                              style: GoogleFonts.rubik(color: Colors.grey, fontSize: screenWidth * 0.03),
+                              style: GoogleFonts.poppins(color: Colors.grey, fontSize: screenWidth * 0.03),
                             ),
                           ),
                         ],

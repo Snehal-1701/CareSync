@@ -1,9 +1,11 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:caresync/Komal/DoctorSide/DoctorHomeScreen.dart';
 import 'package:caresync/Tejas/Login&Sigup/Doctor/SignUp.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DoctorSignInPage extends StatefulWidget {
   const DoctorSignInPage({super.key});
@@ -33,71 +35,23 @@ class _DoctorSignInPageState extends State {
         .showSnackBar(SnackBar(content: Text(message)));
   }
 
-  // Future<void> _signIn() async {
-  //   if (_formKey.currentState!.validate()) {
-  //     try {
-  //       final email = _dphoneEmailController.text.trim();
-  //       final password = _dpasswordController.text.trim();
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
 
-  //       await _auth.signInWithEmailAndPassword(
-  //           email: email, password: password);
+  Future<void> _checkLoginStatus() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
-  //       if (context.mounted) {
-  //       Navigator.of(context).pushReplacement(
-  //         MaterialPageRoute(builder: (context) => const DoctorHomeScreen()),
-  //       );
-  //     }
-  //     } on FirebaseAuthException catch (e) {
-  //       if (e.code == 'user-not-found') {
-  //         _showSnackbar(
-  //             "No account found. Please create a new account to get started.");
-  //       } else {
-  //         // Authentication issue (generic message for wrong-password or other issues)
-  //         _showSnackbar(
-  //             "Authentication failed. Please check your credentials and try again.");
-  //       }
-  //     }
-  //   }
-  // }
-
-  // Future<void> _signIn() async {
-  //   if (_doctorformKey.currentState!.validate()) {
-  //     try {
-  //       final email = _dphoneEmailController.text.trim();
-  //       final password = _dpasswordController.text.trim();
-
-  //       // Firebase Authentication Sign-In
-  //       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-  //         email: email,
-  //         password: password,
-  //       );
-  //       print('User Signed In: ${userCredential.user?.email}');
-
-  //       // Navigate to DoctorHomeScreen
-  //       if (context.mounted) {
-  //         Navigator.of(context).pushReplacement(
-  //           MaterialPageRoute(builder: (context) => const DoctorHomeScreen()),
-  //         );
-  //       }
-  //     } on FirebaseAuthException catch (e) {
-  //       // Handle Firebase errors
-  //       print('FirebaseAuthException: ${e.code}');
-  //       if (e.code == 'user-not-found') {
-  //         _showSnackbar(
-  //           "No account found. Please create a new account to get started.",
-  //         );
-  //       } else if (e.code == 'wrong-password') {
-  //         _showSnackbar("Incorrect password. Please try again.");
-  //       } else {
-  //         _showSnackbar("Authentication failed: ${e.message}");
-  //       }
-  //     } catch (e) {
-  //       // Handle any other errors
-  //       print('Exception: $e');
-  //       _showSnackbar("An error occurred. Please try again.");
-  //     }
-  //   }
-  // }
+    if (isLoggedIn) {
+      // Navigate to home screen if already logged in
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const DoctorHomeScreen()),
+      );
+    }
+  }
 
   Future<void> _signIn() async {
     if (_doctorformKey.currentState!.validate()) {
@@ -116,10 +70,14 @@ class _DoctorSignInPageState extends State {
         if (user != null) {
           // Fetching user role from the 'doctors' section in Firestore
           final DocumentSnapshot snapshot =
-              await _firestore.collection('doctors').doc(user.uid).get();
+              await _firestore.collection('CareSync').doc('doctors').collection('accounts').doc(user.uid).get();
 
           if (snapshot.exists) {
-            // User is authenticated as a doctor
+            // Save login status in SharedPreferences
+            final SharedPreferences prefs =
+                await SharedPreferences.getInstance();
+            await prefs.setBool('isLoggedIn', true);
+
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                   builder: (context) => const DoctorHomeScreen()),
@@ -168,7 +126,6 @@ class _DoctorSignInPageState extends State {
         return;
       }
 
-      // Obtain the authentication details from the request
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
 
@@ -178,21 +135,35 @@ class _DoctorSignInPageState extends State {
         idToken: googleAuth.idToken,
       );
 
-      // Sign in to Firebase with the credential
       final UserCredential userCredential =
           await _auth.signInWithCredential(credential);
 
       if (userCredential.user != null) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const DoctorHomeScreen()),
-        );
-      } else {
-        _showSnackbar("Sign-In failed. Please try again.");
+        final user = userCredential.user;
+
+        final DocumentSnapshot snapshot = await _firestore
+          .collection('CareSync')
+          .doc('doctors')
+          .collection('accounts')
+          .doc(user!.uid)
+          .get();
+
+
+        if (snapshot.exists) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const DoctorHomeScreen()),
+          );
+        } else {
+          _auth.signOut();
+          _showSnackbar(
+              "This account is not registered as a patient. Please use a patient account.");
+        }
       }
     } catch (e) {
       _showSnackbar("Google Sign-In error: ${e.toString()}");
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -229,142 +200,158 @@ class _DoctorSignInPageState extends State {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    'Sign In',
-                    style: TextStyle(
-                        fontSize: fontSizeTitle, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: screenHeight * 0.05),
-                  TextFormField(
-                    controller: _dphoneEmailController,
-                    decoration: InputDecoration(
-                      labelText: 'Enter your email',
-                      prefixIcon: Icon(Icons.email, size: iconSize),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: screenHeight * 0.025),
-                  TextFormField(
-                    controller: _dpasswordController,
-                    obscureText: !_isPasswordVisible,
-                    decoration: InputDecoration(
-                      labelText: 'Enter your password',
-                      prefixIcon: Icon(Icons.lock, size: iconSize),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _isPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          size: iconSize,
-                        ),
-                        onPressed: _togglePasswordVisibility,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      return null;
-                    },
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: _sendPasswordResetEmail,
-                      child: const Text(
-                        'Forgot password?',
-                        style:
-                            TextStyle(color: Color.fromRGBO(14, 190, 127, 1)),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.025),
-                  ElevatedButton(
-                    onPressed: _signIn,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(14, 190, 127, 1),
-                      padding:
-                          EdgeInsets.symmetric(vertical: screenHeight * 0.02),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
+                  FadeInUp(
                     child: Text(
                       'Sign In',
                       style: TextStyle(
-                        fontSize: fontSizeButton,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                          fontSize: fontSizeTitle, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.05),
+                  FadeInUp(
+                    child: TextFormField(
+                      controller: _dphoneEmailController,
+                      decoration: InputDecoration(
+                        labelText: 'Enter your email',
+                        prefixIcon: Icon(Icons.email, size: iconSize),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your email';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.025),
+                  FadeInUp(
+                    child: TextFormField(
+                      controller: _dpasswordController,
+                      obscureText: !_isPasswordVisible,
+                      decoration: InputDecoration(
+                        labelText: 'Enter your password',
+                        prefixIcon: Icon(Icons.lock, size: iconSize),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            size: iconSize,
+                          ),
+                          onPressed: _togglePasswordVisibility,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  FadeInUp(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: _sendPasswordResetEmail,
+                        child: const Text(
+                          'Forgot password?',
+                          style:
+                              TextStyle(color: Color.fromRGBO(14, 190, 127, 1)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.025),
+                  FadeInUp(
+                    child: ElevatedButton(
+                      onPressed: _signIn,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromRGBO(14, 190, 127, 1),
+                        padding:
+                            EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      child: Text(
+                        'Sign In',
+                        style: TextStyle(
+                          fontSize: fontSizeButton,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.015),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Don't have an account? "),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const DoctorSignUpPage(),
+                  FadeInUp(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Don't have an account? "),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const DoctorSignUpPage(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            'Sign up',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromRGBO(14, 190, 127, 1),
                             ),
-                          );
-                        },
-                        child: const Text(
-                          'Sign up',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Color.fromRGBO(14, 190, 127, 1),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   SizedBox(height: screenHeight * 0.05),
-                  Row(
-                    children: [
-                      const Expanded(child: Divider()),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: screenWidth * 0.02),
-                        child: const Text('OR'),
-                      ),
-                      const Expanded(child: Divider()),
-                    ],
+                  FadeInUp(
+                    child: Row(
+                      children: [
+                        const Expanded(child: Divider()),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.02),
+                          child: const Text('OR'),
+                        ),
+                        const Expanded(child: Divider()),
+                      ],
+                    ),
                   ),
                   SizedBox(height: screenHeight * 0.04),
-                  Center(
-                    child: ElevatedButton.icon(
-                      onPressed: signInWithGoogle,
-                      label: Text(
-                        'Sign In with Google',
-                        style: TextStyle(fontSize: fontSizeButton),
-                      ),
-                      icon: Image.asset("assets/png/GoogleIcon.png",
-                          width: iconSize),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.black,
-                        backgroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(
-                          vertical: screenHeight * 0.02,
-                          horizontal: screenWidth * 0.1,
+                  FadeInUp(
+                    child: Center(
+                      child: ElevatedButton.icon(
+                        onPressed: signInWithGoogle,
+                        label: Text(
+                          'Sign In with Google',
+                          style: TextStyle(fontSize: fontSizeButton),
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          side: const BorderSide(color: Colors.grey),
+                        icon: Image.asset("assets/png/GoogleIcon.png",
+                            width: iconSize),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.black,
+                          backgroundColor: Colors.white,
+                          padding: EdgeInsets.symmetric(
+                            vertical: screenHeight * 0.02,
+                            horizontal: screenWidth * 0.1,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            side: const BorderSide(color: Colors.grey),
+                          ),
                         ),
                       ),
                     ),

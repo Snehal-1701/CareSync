@@ -45,8 +45,8 @@ class _NotificationAppState extends State<NotificationApp> {
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: Container(
-                      height: screenWidth * 0.12,
-                      width: screenWidth * 0.12,
+                      height: screenWidth * 0.1,
+                      width: screenWidth * 0.1,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(screenWidth * 0.04),
                         color: Colors.white,
@@ -65,10 +65,10 @@ class _NotificationAppState extends State<NotificationApp> {
                       ),
                     ),
                   ),
-                  SizedBox(width: screenWidth * 0.09),
+                  SizedBox(width: screenWidth * 0.13),
                   Text(
-                    "All Appointment",
-                    style: GoogleFonts.rubik(
+                    "Notifications",
+                    style: GoogleFonts.poppins(
                       fontSize: screenWidth * 0.07,
                       fontWeight: FontWeight.w600,
                     ),
@@ -96,7 +96,7 @@ class _NotificationAppState extends State<NotificationApp> {
                             ),
                             child: Text(
                               'Today',
-                              style: GoogleFonts.rubik(
+                              style: GoogleFonts.poppins(
                                 fontSize: screenWidth * 0.045,
                                 color: const Color.fromRGBO(14, 190, 127, 1).withOpacity(0.9),
                                 fontWeight: FontWeight.w500,
@@ -106,7 +106,7 @@ class _NotificationAppState extends State<NotificationApp> {
                           const Spacer(),
                           Text(
                             'Mark all',
-                            style: GoogleFonts.rubik(
+                            style: GoogleFonts.poppins(
                               fontSize: screenWidth * 0.045,
                               color: const Color.fromRGBO(14, 190, 127, 1).withOpacity(0.9),
                               fontWeight: FontWeight.w500,
@@ -152,7 +152,7 @@ class _NotificationAppState extends State<NotificationApp> {
                             ),
                             child: Text(
                               'Yesterday',
-                              style: GoogleFonts.rubik(
+                              style: GoogleFonts.poppins(
                                 fontSize: screenWidth * 0.045,
                                 color: const Color.fromRGBO(14, 190, 127, 1).withOpacity(0.9),
                                 fontWeight: FontWeight.w500,
@@ -162,7 +162,7 @@ class _NotificationAppState extends State<NotificationApp> {
                           const Spacer(),
                           Text(
                             'Mark all',
-                            style: GoogleFonts.rubik(
+                            style: GoogleFonts.poppins(
                               fontSize: screenWidth * 0.045,
                               color: const Color.fromRGBO(14, 190, 127, 1).withOpacity(0.9),
                               fontWeight: FontWeight.w500,
@@ -193,7 +193,7 @@ class _NotificationAppState extends State<NotificationApp> {
                             ),
                             child: Text(
                               '15 April',
-                              style: GoogleFonts.rubik(
+                              style: GoogleFonts.poppins(
                                 fontSize: screenWidth * 0.045,
                                 color: const Color.fromRGBO(14, 190, 127, 1).withOpacity(0.9),
                                 fontWeight: FontWeight.w500,
@@ -203,7 +203,7 @@ class _NotificationAppState extends State<NotificationApp> {
                           const Spacer(),
                           Text(
                             'Mark all',
-                            style: GoogleFonts.rubik(
+                            style: GoogleFonts.poppins(
                               fontSize: screenWidth * 0.045,
                               color: const Color.fromRGBO(14, 190, 127, 1).withOpacity(0.9),
                               fontWeight: FontWeight.w500,
@@ -270,7 +270,7 @@ class _NotificationAppState extends State<NotificationApp> {
               children: [
                 Text(
                   title,
-                  style: GoogleFonts.rubik(
+                  style: GoogleFonts.poppins(
                     fontSize: screenWidth * 0.045,
                     fontWeight: FontWeight.w500,
                   ),
@@ -278,7 +278,7 @@ class _NotificationAppState extends State<NotificationApp> {
                 SizedBox(height: screenWidth * 0.01),
                 Text(
                   subtitle,
-                  style: GoogleFonts.rubik(
+                  style: GoogleFonts.poppins(
                     fontSize: screenWidth * 0.035,
                     color: Colors.grey[600],
                   ),
@@ -289,7 +289,7 @@ class _NotificationAppState extends State<NotificationApp> {
           SizedBox(width: screenWidth * 0.02),
           Text(
             time,
-            style: GoogleFonts.rubik(
+            style: GoogleFonts.poppins(
               fontSize: screenWidth * 0.035,
               color: Colors.grey[500],
             ),

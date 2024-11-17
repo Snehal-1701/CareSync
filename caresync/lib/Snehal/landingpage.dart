@@ -41,7 +41,7 @@ class _LandingPageState extends State<LandingPage> {
             Image.asset("assets/png/images/logo.png", height: 200, width: 200),
             Text(
               "CareSync",
-              style: GoogleFonts.rubik(
+              style: GoogleFonts.poppins(
                 fontSize: 30,
                 fontWeight: FontWeight.w400,
                 color: const Color.fromRGBO(14, 190, 126, 1),
@@ -49,7 +49,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             Text(
               "Stay healthy with us...",
-              style: GoogleFonts.rubik(
+              style: GoogleFonts.poppins(
                 fontSize: 30,
                 fontWeight: FontWeight.w400,
                 color: Colors.black,
@@ -57,7 +57,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             Text(
               "You are a",
-              style: GoogleFonts.rubik(
+              style: GoogleFonts.poppins(
                 fontSize: 30,
                 fontWeight: FontWeight.w400,
                 color: Colors.black,
@@ -77,7 +77,7 @@ class _LandingPageState extends State<LandingPage> {
                 ),
                 child: Text(
                   "Patient",
-                  style: GoogleFonts.rubik(
+                  style: GoogleFonts.poppins(
                     fontSize: 30,
                     fontWeight: FontWeight.w400,
                     color: Colors.white,
@@ -101,7 +101,7 @@ class _LandingPageState extends State<LandingPage> {
                 ),
                 child: Text(
                   "Doctor",
-                  style: GoogleFonts.rubik(
+                  style: GoogleFonts.poppins(
                     fontSize: 30,
                     fontWeight: FontWeight.w400,
                     color: Colors.white,
@@ -125,7 +125,7 @@ class _LandingPageState extends State<LandingPage> {
                 ),
                 child: Text(
                   "Admin",
-                  style: GoogleFonts.rubik(
+                  style: GoogleFonts.poppins(
                     fontSize: 30,
                     fontWeight: FontWeight.w400,
                     color: Colors.white,

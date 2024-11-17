@@ -16,6 +16,8 @@ class OrdersPage extends StatefulWidget {
 class _OrdersPageState extends State<OrdersPage> {
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Stack(
         children: [
@@ -37,7 +39,7 @@ class _OrdersPageState extends State<OrdersPage> {
           ),
           // Custom AppBar content
           Padding(
-            padding: const EdgeInsets.fromLTRB(16.0, 70, 16, 0),
+            padding: EdgeInsets.fromLTRB(16.0, screenHeight*0.06, 16, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -46,8 +48,8 @@ class _OrdersPageState extends State<OrdersPage> {
                     Navigator.pop(context);
                   },
                   child: Container(
-                    height: 45,
-                    width: 45,
+                    height: screenWidth * 0.1,
+                    width: screenWidth * 0.1,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(17),
                       color: Colors.white,
@@ -61,7 +63,7 @@ class _OrdersPageState extends State<OrdersPage> {
                 ),
                 Text(
                   'My Orders',
-                  style: GoogleFonts.rubik(
+                  style: GoogleFonts.poppins(
                     fontSize: 30,
                     fontWeight: FontWeight.w600,
                   ),

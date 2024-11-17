@@ -111,7 +111,7 @@
 //                     SizedBox(width: screenWidth*0.05,),
 //                     Text(
 //                       'Doctor Categories',
-//                       style: GoogleFonts.rubik(
+//                       style: GoogleFonts.poppins(
 //                         fontSize: screenWidth * 0.07,
 //                         fontWeight: FontWeight.w600,
 //                       ),
@@ -208,7 +208,6 @@
 //   }
 // }
 
-import 'package:caresync/Snehal/appointment/book_appointment.dart';
 import 'package:caresync/Snehal/dr_speciality/doctors.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -216,7 +215,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DoctorCategories extends StatefulWidget {
-  DoctorCategories({super.key});
+  const DoctorCategories({super.key});
 
   @override
   State<DoctorCategories> createState() => _ProductCategoriesState();
@@ -243,25 +242,25 @@ class _ProductCategoriesState extends State<DoctorCategories> {
   ];
 
   List<Map<String, dynamic>> carouselImages = [
-    {'image': "assets/jpg/carousel_jpg/cardiology.jpg", 'route': DoctorListScreen(drSpeciality: "Cardiology")},
-    {'image': "assets/jpg/carousel_jpg/dermatology.jpg", 'route': DoctorListScreen(drSpeciality: "Dermatology")},
-    {'image': "assets/jpg/carousel_jpg/general_medicine.jpg", 'route': DoctorListScreen(drSpeciality: "General Medicine")},
-    {'image': "assets/jpg/carousel_jpg/gynecology.jpg", 'route': DoctorListScreen(drSpeciality: "Gynecology")},
-    {'image': "assets/jpg/carousel_jpg/odontology.jpg", 'route': DoctorListScreen(drSpeciality: "Odontology")},
-    {'image': "assets/jpg/carousel_jpg/oncology.jpg", 'route': DoctorListScreen(drSpeciality: "Oncology")},
-    {'image': "assets/jpg/carousel_jpg/ophatamology.jpg", 'route': DoctorListScreen(drSpeciality: "Ophthalmology")},
-    {'image': "assets/jpg/carousel_jpg/orthopedics.jpg", 'route': DoctorListScreen(drSpeciality: "Orthopedics")},
+    {'image': "assets/jpg/carousel_jpg/cardiology.jpg", 'route': const DoctorListScreen(drSpeciality: "Cardiology")},
+    {'image': "assets/jpg/carousel_jpg/dermatology.jpg", 'route': const DoctorListScreen(drSpeciality: "Dermatology")},
+    {'image': "assets/jpg/carousel_jpg/general_medicine.jpg", 'route': const DoctorListScreen(drSpeciality: "General Medicine")},
+    {'image': "assets/jpg/carousel_jpg/gynecology.jpg", 'route': const DoctorListScreen(drSpeciality: "Gynecology")},
+    {'image': "assets/jpg/carousel_jpg/odontology.jpg", 'route': const DoctorListScreen(drSpeciality: "Odontology")},
+    {'image': "assets/jpg/carousel_jpg/oncology.jpg", 'route': const DoctorListScreen(drSpeciality: "Oncology")},
+    {'image': "assets/jpg/carousel_jpg/ophatamology.jpg", 'route': const DoctorListScreen(drSpeciality: "Ophthalmology")},
+    {'image': "assets/jpg/carousel_jpg/orthopedics.jpg", 'route': const DoctorListScreen(drSpeciality: "Orthopedics")},
   ];
 
   List<Map<String, dynamic>> drSpecialisation = [
-    {'image': "assets/svg/specialisation/Cardiology Specialties Button # 4.svg", 'route': DoctorListScreen(drSpeciality: "Cardiology")},
-    {'image': "assets/svg/specialisation/Dermatology Specialties Button # 3.svg", 'route': DoctorListScreen(drSpeciality: "Dermatology")},
-    {'image': "assets/svg/specialisation/Specialties Button # 1 (1).svg", 'route': DoctorListScreen(drSpeciality: "General Medicine")},
-    {'image': "assets/svg/specialisation/Gynecology Specialties Button # 10.svg", 'route': DoctorListScreen(drSpeciality: "Gynecology")},
-    {'image': "assets/svg/specialisation/Odontology Specialties Button # 12.svg", 'route': DoctorListScreen(drSpeciality: "Odontology")},
-    {'image': "assets/svg/specialisation/Oncology Specialties Button # 11.svg", 'route': DoctorListScreen(drSpeciality: "Oncology")},
-    {'image': "assets/svg/specialisation/Ophtamology Specialties Button # 2.svg", 'route': DoctorListScreen(drSpeciality: "Ophthalmology")},
-    {'image': "assets/svg/specialisation/Orthopedics Specialties Button # 13.svg", 'route': DoctorListScreen(drSpeciality: "Orthopedics")},
+    {'image': "assets/svg/specialisation/Cardiology Specialties Button # 4.svg", 'route': const DoctorListScreen(drSpeciality: "Cardiology")},
+    {'image': "assets/svg/specialisation/Dermatology Specialties Button # 3.svg", 'route': const DoctorListScreen(drSpeciality: "Dermatology")},
+    {'image': "assets/svg/specialisation/Specialties Button # 1 (1).svg", 'route': const DoctorListScreen(drSpeciality: "General Medicine")},
+    {'image': "assets/svg/specialisation/Gynecology Specialties Button # 10.svg", 'route': const DoctorListScreen(drSpeciality: "Gynecology")},
+    {'image': "assets/svg/specialisation/Odontology Specialties Button # 12.svg", 'route': const DoctorListScreen(drSpeciality: "Odontology")},
+    {'image': "assets/svg/specialisation/Oncology Specialties Button # 11.svg", 'route': const DoctorListScreen(drSpeciality: "Oncology")},
+    {'image': "assets/svg/specialisation/Ophtamology Specialties Button # 2.svg", 'route': const DoctorListScreen(drSpeciality: "Ophthalmology")},
+    {'image': "assets/svg/specialisation/Orthopedics Specialties Button # 13.svg", 'route': const DoctorListScreen(drSpeciality: "Orthopedics")},
   ];
 
   @override
@@ -301,8 +300,8 @@ class _ProductCategoriesState extends State<DoctorCategories> {
                         Navigator.pop(context);
                       },
                       child: Container(
-                        height: 45,
-                        width: 45,
+                        height: screenWidth * 0.1, 
+                        width: screenWidth * 0.1,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(17),
                           color: Colors.white,
@@ -317,7 +316,7 @@ class _ProductCategoriesState extends State<DoctorCategories> {
                     SizedBox(width: screenWidth * 0.05),
                     Text(
                       'Doctor Categories',
-                      style: GoogleFonts.rubik(
+                      style: GoogleFonts.poppins(
                         fontSize: screenWidth * 0.07,
                         fontWeight: FontWeight.w600,
                       ),
