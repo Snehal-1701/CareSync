@@ -4,54 +4,70 @@ import 'select_slot.dart';
 import 'package:intl/intl.dart';
 
 class BookAppointment extends StatefulWidget {
-  const BookAppointment({super.key});
+  final String doctorName;
+  final String clinicName;
+  final String specialty;
+  final String doctorImage;
 
+  // Constructor to accept doctor data
+  BookAppointment({
+    required this.doctorName,
+    required this.clinicName,
+    required this.specialty,
+    required this.doctorImage,
+  });
   @override
   State<BookAppointment> createState() => _BookAppointmentState();
 }
 
 class _BookAppointmentState extends State<BookAppointment> {
-
   TextEditingController dateController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController numberController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    // double iconSize = screenWidth * 0.07;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      ///BOOK APPOINTMENT UI
       body: Container(
         decoration: const BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          stops: [0.0, 0.3, 0.7, 1.0],
-          colors: [
-            Color.fromRGBO(97, 206, 255, 220),
-            Colors.white,
-            Colors.white,
-            Color.fromRGBO(14, 190, 126, 220),
-          ],
-        )),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            stops: [0.0, 0.3, 0.7, 1.0],
+            colors: [
+              Color.fromRGBO(97, 206, 255, 220),
+              Colors.white,
+              Colors.white,
+              Color.fromRGBO(14, 190, 126, 220),
+            ],
+          ),
+        ),
         child: Padding(
-          padding:
-              const EdgeInsets.only(top: 25.0, left: 15, right: 15, bottom: 15),
+          padding: EdgeInsets.only(
+            top: screenHeight * 0.06,
+            left: screenWidth * 0.04,
+            right: screenWidth * 0.04,
+            bottom: screenHeight * 0.00,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  ///ICON - BACK
                   GestureDetector(
-                    onTap: (){
-                      //Navigator.pop(context);
+                    onTap: () {
+                      Navigator.pop(context);
                     },
                     child: Container(
                         height: 45,
                         width: 45,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(17),
                           color: Colors.white,
                         ),
                         child: const Icon(
@@ -60,385 +76,245 @@ class _BookAppointmentState extends State<BookAppointment> {
                           color: Colors.grey,
                         )),
                   ),
-                  const SizedBox(width: 25),
-
-                  ///TEXT
-                  Text(
-                    "Appointment",
-                    style: GoogleFonts.rubik(
-                      fontSize: 25,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
+                  SizedBox(width: screenWidth * 0.05),
+                  Center(
+                    child: Text(
+                      "Appointment",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.rubik(
+                        fontSize: screenWidth * 0.065,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ],
               ),
-
-              ///CARD
-              Container(
-                margin: const EdgeInsets.only(top: 20),
-                padding: const EdgeInsets.all(12),
-                height: 120,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.white,
-                  boxShadow: const [
-                    BoxShadow(
+              Stack(children: [
+                Container(
+                  margin: EdgeInsets.only(top: screenHeight * 0.02),
+                  padding: EdgeInsets.all(screenWidth * 0.03),
+                  height: screenHeight * 0.15,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
                         color: Color.fromRGBO(0, 0, 0, 0.2),
                         blurRadius: 18,
-                        offset: Offset(0, 4)),
-                  ],
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ///IMAGE
-                    Container(
-                      height: 100,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
+                        offset: Offset(0, 4),
                       ),
-                      clipBehavior: Clip.antiAlias,
-                      child: Image.asset(
-                        "assets/images/profile1.jpg",
-                      ),
-                    ),
-
-                    ///COLUMN - TEXT
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Dr.Komal Bhosale",
-                              style: GoogleFonts.rubik(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                "Upasana Dental Clinic, salt lake",
-                                style: GoogleFonts.rubik(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
-
-                            ///ROW - STARS
-                            Row(
-                              children: [
-                                const Icon(
-                                  size: 16,
-                                  Icons.star,
-                                  color: Color.fromARGB(255, 199, 199, 14),
-                                ),
-                                const Icon(
-                                  size: 16,
-                                  Icons.star,
-                                  color: Color.fromARGB(255, 199, 199, 14),
-                                ),
-                                const Icon(
-                                  size: 16,
-                                  Icons.star,
-                                  color: Color.fromARGB(255, 199, 199, 14),
-                                ),
-                                const Icon(
-                                  size: 16,
-                                  Icons.star,
-                                  color: Color.fromARGB(255, 199, 199, 14),
-                                ),
-                                const Icon(
-                                  size: 16,
-                                  Icons.star,
-                                  color: Color.fromARGB(255, 199, 199, 14),
-                                ),
-                                const Spacer(),
-                                Text(
-                                  "₹ 500.00/hr",
-                                  style: GoogleFonts.rubik(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: screenHeight * 0.13,
+                        width: screenWidth * 0.25,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Image.asset(
+                          widget.doctorImage,
+                          fit: BoxFit.cover,
                         ),
                       ),
-                    ),
-
-                    ///LIKE ICON
-                    const Icon(
-                      Icons.favorite,
-                      color: Colors.red,
-                    ),
-                  ],
-                ),
-              ),
-
-              ///TEXT
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: Text(
-                  "Appointment For",
-                  style: GoogleFonts.rubik(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-
-              ///TEXTFIELD - NAME
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.0),
-                child: TextField(
-                  controller: nameController,
-                  decoration: InputDecoration(
-                    hintText: "Patient Name",
-                    hintStyle: GoogleFonts.rubik(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.grey),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                  ),
-                ),
-              ),
-
-              ///TEXTFIELD - CONTACT NUMBER
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: TextField(
-                  controller: numberController,
-                  decoration: InputDecoration(
-                    hintText: "Contact Number",
-                    hintStyle: GoogleFonts.rubik(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.grey,
-                    ),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide:
-                          // BorderSide(color: Color.fromARGB(103, 114, 148, 120)),
-                          BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                  ),
-                ),
-              ),
-
-              ///DATEPICKER
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: TextField(
-                    controller: dateController,
-                    readOnly: true,
-                    onTap: () async {
-                      DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        firstDate: DateTime(2024),
-                        lastDate: DateTime(2025),
-                      );
-                  
-                      String formattedDate =
-                          DateFormat.yMMMd().format(pickedDate!);
-                  
-                      setState(() {
-                        dateController.text = formattedDate;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      suffixIcon: const Icon(
-                        Icons.calendar_month_outlined,
-                      ),
-                      hintText: "Date",
-                    hintStyle: GoogleFonts.rubik(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.grey),
-                      enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    ),
-                  ),
-                ),
-              ///TEXT
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: Text(
-                  "Who is this patient?",
-                  style: GoogleFonts.rubik(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    Column(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(right: 12),
-                          height: 140,
-                          width: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: const Color.fromARGB(255, 172, 250, 223),
-                          ),
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: screenWidth * 0.02),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Icon(
-                                size: 40,
-                                Icons.add,
-                                color: Color.fromRGBO(14, 190, 127, 1),
+                              Row(
+                                children: [
+                                  Text(
+                                    widget.doctorName,
+                                    style: GoogleFonts.rubik(
+                                      fontSize: screenWidth * 0.05,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
                               ),
+                              // SizedBox(height: 2),
                               Text(
-                                "Add",
+                                widget.clinicName,
                                 style: GoogleFonts.rubik(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w500,
-                                  color: const Color.fromRGBO(14, 190, 127, 1),
+                                  fontSize: screenWidth * 0.04,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.black,
+                                ),
+                              ),
+
+                              // SizedBox(height: 2),
+                              Text(
+                                widget.specialty,
+                                style: GoogleFonts.rubik(
+                                  fontSize: screenWidth * 0.04,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.grey,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "Add More",
-                            style: GoogleFonts.rubik(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
+                    ],
+                  ),
+                ),
+                const Positioned(
+                  top: 25,
+                  right: 10,
+                  child: Icon(
+                    Icons.favorite_border_rounded,
+                    color: Colors.black,
+                  ),
+                ),
+              ]),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.015),
+                child: Text(
+                  "Appointment For",
+                  style: GoogleFonts.rubik(
+                    fontSize: screenWidth * 0.055,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.005),
+                child: TextField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Patient Name',
+                    // prefixIcon: Icon(Icons.email, size: iconSize),
+                    labelStyle: GoogleFonts.rubik(
+                      fontSize: screenWidth * 0.045,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.grey,
                     ),
-                    Column(
-                      children: [
-                        Container(
-                            margin: const EdgeInsets.only(right: 12),
-                            height: 140,
-                            width: 100,
-                            clipBehavior: Clip.antiAlias,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: const Color.fromARGB(255, 172, 250, 223),
-                            ),
-                            child: Image.asset("assets/images/man.png",
-                                fit: BoxFit.cover)),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "My self",
-                            style: GoogleFonts.rubik(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ],
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    Column(
-                      children: [
-                        Container(
-                            margin: const EdgeInsets.only(right: 12),
-                            height: 140,
-                            width: 100,
-                            clipBehavior: Clip.antiAlias,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: const Color.fromARGB(255, 172, 250, 223),
-                            ),
-                            child: Image.asset("assets/images/baby.png")),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "My child",
-                            style: GoogleFonts.rubik(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ],
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    Column(
-                      children: [
-                        Container(
-                            margin: const EdgeInsets.only(right: 12),
-                            height: 140,
-                            width: 100,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: const Color.fromARGB(255, 172, 250, 223),
-                            ),
-                            child: Image.asset("assets/images/woman.png",
-                                fit: BoxFit.cover)),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "My wife",
-                            style: GoogleFonts.rubik(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                  ),
                 ),
               ),
 
-              ///BUTTON NEXT
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                child: TextField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Contact Number',
+                    // prefixIcon: Icon(Icons.email, size: iconSize),
+                    labelStyle: GoogleFonts.rubik(
+                      fontSize: screenWidth * 0.045,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.grey,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.005),
+                child: TextField(
+                  controller: dateController,
+                  readOnly: true,
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      firstDate: DateTime(2024),
+                      lastDate: DateTime(2025),
+                    );
+                    if (pickedDate != null) {
+                      String formattedDate =
+                          DateFormat.yMMMd().format(pickedDate);
+                      setState(() {
+                        dateController.text = formattedDate;
+                      });
+                    }
+                  },
+                  
+                  decoration: InputDecoration(
+                    suffixIcon: const Icon(Icons.calendar_month_outlined),
+                    labelText: 'Date',
+                    // prefixIcon: Icon(Icons.email, size: iconSize),
+                    labelStyle: GoogleFonts.rubik(
+                      fontSize: screenWidth * 0.045,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.grey,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+                child: Text(
+                  "Who is this patient?",
+                  style: GoogleFonts.rubik(
+                    fontSize: screenWidth * 0.055,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _patientOption("Add", Icons.add, "Add More"),
+                    _patientOption("My self", null, "My self",
+                        asset: "assets/images/man.png"),
+                    _patientOption("My child", null, "My child",
+                        asset: "assets/images/baby.png"),
+                    _patientOption("My wife", null, "My wife",
+                        asset: "assets/images/woman.png"),
+                  ],
+                ),
+              ),
               Center(
                 child: GestureDetector(
-                  onTap:() {
+                  onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const SelectTime())
+                      MaterialPageRoute(
+                          builder: (context) =>  SelectTime(
+                            doctorName: widget.doctorName,
+                            specialty: widget.specialty,
+                            clinicName: widget.clinicName,
+                            doctorImage: widget.doctorImage,
+                          )),
                     );
                   },
                   child: Container(
-                    margin: const EdgeInsets.only(top:5),
-                    padding: const EdgeInsets.all(10),
+                    margin: EdgeInsets.only(top: screenHeight * 0.029),
+                    padding: EdgeInsets.all(screenWidth * 0.03),
                     alignment: Alignment.center,
-                    width: 300,
+                    width: screenWidth * 0.8,
                     decoration: BoxDecoration(
                       color: const Color.fromRGBO(14, 190, 127, 1),
                       borderRadius: BorderRadius.circular(10),
@@ -446,22 +322,58 @@ class _BookAppointmentState extends State<BookAppointment> {
                     child: Text(
                       "Next",
                       style: GoogleFonts.rubik(
-                        fontSize: 18,
+                        fontSize: screenWidth * 0.045,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
       ),
-      
+    );
+  }
+
+  Widget _patientOption(String label, IconData? icon, String subtitle,
+      {String? asset}) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    return Column(
+      children: [
+        Container(
+          margin: EdgeInsets.only(right: screenWidth * 0.03),
+          height: screenHeight * 0.15,
+          width: screenWidth * 0.25,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: const Color.fromARGB(255, 172, 250, 223),
+          ),
+          child: Center(
+            child: icon != null
+                ? Icon(icon,
+                    size: screenWidth * 0.08,
+                    color: const Color.fromRGBO(14, 190, 127, 1))
+                : asset != null
+                    ? Image.asset(asset, fit: BoxFit.cover)
+                    : null,
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(screenWidth * 0.01),
+          child: Text(
+            subtitle,
+            style: GoogleFonts.rubik(
+              fontSize: screenWidth * 0.04,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
-
-
-

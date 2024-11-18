@@ -1,4 +1,8 @@
-import './splash_screen.dart';
+import 'package:caresync/Snehal/appointment/book_appointment.dart';
+import 'package:caresync/Snehal/dr_speciality/doctors.dart';
+import 'package:caresync/Snehal/dr_speciality/specilisation.dart';
+import 'package:caresync/landingpage.dart';
+import 'Snehal/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,10 +14,11 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return  MaterialApp(
       debugShowCheckedModeBanner: false,
       // home: BookAppointment(),
-      home: SplashScreen(),
+      // home: DoctorCategories(),
+      home: LandingPage(),
     );
   }
 }

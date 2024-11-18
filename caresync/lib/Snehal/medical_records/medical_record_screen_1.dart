@@ -13,6 +13,9 @@ class RecordScreen1 extends StatefulWidget {
 class _RecordScreen1State extends State<RecordScreen1> {
   @override
   Widget build(BuildContext context) {
+    // Retrieve screen width and height
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       ///MEDICAL RECORD SCREEN
       body: Container(
@@ -29,8 +32,12 @@ class _RecordScreen1State extends State<RecordScreen1> {
           ],
         )),
         child: Padding(
-          padding:
-              const EdgeInsets.only(top: 25.0, left: 15, right: 15, bottom: 15),
+          padding: EdgeInsets.only(
+            top: screenHeight * 0.06,
+            left: screenWidth * 0.04,
+            right: screenWidth * 0.04,
+            bottom: screenHeight * 0.00,
+          ),
           child: Column(
               // crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -7,6 +7,7 @@ environment:
   sdk: ^3.5.3
 
 dependencies:
+  carousel_slider: ^5.0.0
   flutter:
     sdk: flutter
   flutter_svg: ^2.0.11
@@ -23,3 +24,12 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/svg/specialisation/
+    - assets/carousel_jpg/
+    - assets/carousel_jpg/dermatology.jpg
+    - assets/carousel_jpg/general_medicine.jpg
+    - assets/carousel_jpg/gynecology.jpg
+    - assets/carousel_jpg/odontology.jpg
+    - assets/carousel_jpg/oncology.jpg
+    - assets/carousel_jpg/ophatamology.jpg
+    - assets/carousel_jpg/orthopedics.jpg
