@@ -1,11 +1,11 @@
-import 'package:caresync/Snehal/appointment/book_appointment.dart';
-import 'package:caresync/Snehal/dr_speciality/doctors.dart';
-import 'package:caresync/Snehal/dr_speciality/specilisation.dart';
-import 'package:caresync/landingpage.dart';
-import 'Snehal/splash_screen.dart';
+import 'package:caresync/Snehal/splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MainApp());
 }
 
@@ -14,11 +14,10 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      // home: BookAppointment(),
-      // home: DoctorCategories(),
-      home: LandingPage(),
+      home: SplashScreen(),
     );
   }
 }
+

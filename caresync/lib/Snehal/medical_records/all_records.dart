@@ -46,8 +46,8 @@ class _AllRecordsState extends State<AllRecords> {
                         Navigator.pop(context);
                       },
                       child: Container(
-                          height: 45,
-                          width: 45,
+                          height: screenWidth * 0.1,
+                          width: screenWidth * 0.1,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(17),
                             color: Colors.white,
@@ -58,12 +58,12 @@ class _AllRecordsState extends State<AllRecords> {
                             color: Colors.grey,
                           )),
                     ),
-                  SizedBox(width: screenWidth * 0.05),
+                  SizedBox(width: screenWidth * 0.2),
 
                   /// TEXT
                   Text(
                     "All Records",
-                    style: GoogleFonts.rubik(
+                    style: GoogleFonts.poppins(
                       fontSize: screenWidth * 0.065,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
@@ -113,7 +113,7 @@ class _AllRecordsState extends State<AllRecords> {
                               child: Text(
                                 "23 Feb",
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.rubik(
+                                style: GoogleFonts.poppins(
                                   fontSize: screenWidth * 0.05,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.white,
@@ -131,7 +131,7 @@ class _AllRecordsState extends State<AllRecords> {
                                   children: [
                                     Text(
                                       "Records added by you",
-                                      style: GoogleFonts.rubik(
+                                      style: GoogleFonts.poppins(
                                         fontSize: screenWidth * 0.05,
                                         fontWeight: FontWeight.w600,
                                         color: Colors.black,
@@ -140,7 +140,7 @@ class _AllRecordsState extends State<AllRecords> {
                                     const Spacer(),
                                     Text(
                                       "Record for username",
-                                      style: GoogleFonts.rubik(
+                                      style: GoogleFonts.poppins(
                                         fontSize: screenWidth * 0.042,
                                         fontWeight: FontWeight.w400,
                                         color:
@@ -150,7 +150,7 @@ class _AllRecordsState extends State<AllRecords> {
                                     const Spacer(),
                                     Text(
                                       "1 Prescription",
-                                      style: GoogleFonts.rubik(
+                                      style: GoogleFonts.poppins(
                                         fontSize: screenWidth * 0.040,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.grey,
@@ -231,7 +231,7 @@ class _AllRecordsState extends State<AllRecords> {
                        const SizedBox(width:14),
                        Text(
                         "Upload from gallery",
-                        style: GoogleFonts.rubik(
+                        style: GoogleFonts.poppins(
                           fontSize: 17,
                         ),
                       ),
@@ -247,7 +247,7 @@ class _AllRecordsState extends State<AllRecords> {
                        const SizedBox(width:14),
                        Text(
                         "Upload files",
-                        style: GoogleFonts.rubik(
+                        style: GoogleFonts.poppins(
                           fontSize: 17,
                         ),
                       ),
@@ -260,11 +260,11 @@ class _AllRecordsState extends State<AllRecords> {
                     child: ElevatedButton(
                       onPressed: (){},  
                       style: const ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(const Color.fromRGBO(14, 190, 127, 1),)
+                        backgroundColor: WidgetStatePropertyAll(Color.fromRGBO(14, 190, 127, 1),)
                       ),
                       child: Text(
                         "Add",
-                        style: GoogleFonts.rubik(
+                        style: GoogleFonts.poppins(
                           fontSize: 16,
                           color: Colors.white
                         ),

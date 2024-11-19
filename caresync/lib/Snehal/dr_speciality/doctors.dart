@@ -1,142 +1,70 @@
 import 'package:caresync/Snehal/appointment/book_appointment.dart';
+import 'package:caresync/Snehal/model/doctor_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-class Doctor {
-  final String name;
-  final String specialty;
-  final String imageUrl;
-  final String clinicName;
-
-  Doctor({
-    required this.name,
-    required this.specialty,
-    required this.imageUrl,
-    required this.clinicName,
-  });
-}
 
 class DoctorListScreen extends StatefulWidget {
   final String drSpeciality;
 
-  DoctorListScreen({required this.drSpeciality});
+  const DoctorListScreen({super.key, required this.drSpeciality});
 
   @override
   _DoctorListScreenState createState() => _DoctorListScreenState();
 }
 
-class _DoctorListScreenState extends State<DoctorListScreen> {
-  // Original list of all doctors
-  List<Doctor> allDoctors = [
-    Doctor(
-      name: "Dr. Daniel Rodriguez",
-      specialty: "Cardiology",
-      imageUrl: "assets/images/profile1.jpg",
-      clinicName: "Upasana Clinic",
-    ),
-    Doctor(
-      name: "Dr. Jessica Ramirez",
-      specialty: "Cardiology",
-      imageUrl: "assets/images/profile1.jpg",
-      clinicName: "Upasana Clinic",
-    ),
-    Doctor(
-      name: "Dr. Michael Chang",
-      specialty: "Cardiology",
-      imageUrl: "assets/images/profile1.jpg",
-      clinicName: "Upasana Clinic",
-    ),
-    Doctor(
-      name: "Dr. Michael Davidson, M.D.",
-      specialty: "Cardiology",
-      imageUrl: "assets/images/profile1.jpg",
-      clinicName: "Upasana Clinic",
-    ),
-    // Add other doctors here...
-    Doctor(
-      name: "Dr. Hannah Lewis, M.D.",
-      specialty: "Dermatology",
-      imageUrl: "assets/images/profile1.jpg",
-      clinicName: "Upasana Clinic",
-    ),
-    Doctor(
-      name: "Dr. Jacob Lopez, M.D.",
-      specialty: "Dermatology",
-      imageUrl: "assets/images/profile1.jpg",
-      clinicName: "Upasana Clinic",
-    ),
-    Doctor(
-      name: "Dr. Lucy Perez, Ph.D.",
-      specialty: "Dermatology",
-      imageUrl: "assets/images/profile1.jpg",
-      clinicName: "Upasana Clinic",
-    ),
-    Doctor(
-      name: "Dr. Logan Williams, M.D.",
-      specialty: "General Medicine",
-      imageUrl: "assets/images/profile1.jpg",
-      clinicName: "Upasana Clinic",
-    ),
-    Doctor(
-      name: "Dr. Emma Hall, M.D.",
-      specialty: "General Medicine",
-      imageUrl: "assets/images/profile1.jpg",
-      clinicName: "Upasana Clinic",
-    ),
-    Doctor(
-      name: "Dr. James Taylor, M.D.",
-      specialty: "Gynecology",
-      imageUrl: "assets/images/profile1.jpg",
-      clinicName: "Upasana Clinic",
-    ),
-    Doctor(
-      name: "Dr. Madison Clark, Ph.D.",
-      specialty: "Gynecology",
-      imageUrl: "assets/images/profile1.jpg",
-      clinicName: "Upasana Clinic",
-    ),
-    Doctor(
-      name: "Dr. Thomas Rivera, M.D.",
-      specialty: "Gynecology",
-      imageUrl: "assets/images/profile1.jpg",
-      clinicName: "Upasana Clinic",
-    ),
-    Doctor(
-      name: "Dr. Ava Williams, M.D.",
-      specialty: "Odontology",
-      imageUrl: "assets/images/profile1.jpg",
-      clinicName: "Upasana Clinic",
-    ),
-    Doctor(
-      name: "Dr. Chloe Green, M.D.",
-      specialty: "Odontology",
-      imageUrl: "assets/images/profile1.jpg",
-      clinicName: "Upasana Clinic",
-    ),
-    Doctor(
-      name: "Dr. Daniel Lee, Ph.D.",
-      specialty: "Oncology",
-      imageUrl: "assets/images/profile1.jpg",
-      clinicName: "Upasana Clinic",
-    ),
-    Doctor(
-      name: "Dr. Quinn Cooper, M.D.",
-      specialty: "Oncology",
-      imageUrl: "assets/images/profile1.jpg",
-      clinicName: "Upasana Clinic",
-    ),
-  ];
+Future<List<Doctor>> fetchDoctors() async {
+  List<Doctor> doctorList = [];
+  try {
+    // Reference to the Firestore collection
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('CareSync')
+        .doc('doctors')
+        .collection('accounts')
+        .get();
 
+    // Extracting required fields from each document
+    for (var doc in querySnapshot.docs) {
+      String name = doc['name'];
+      String clinicLocation = doc['cliniclocation'];
+      String specialization = doc['specialization'];
+
+      // Adding to the local list
+      doctorList.add(Doctor(
+        name: name,
+        clinicName: clinicLocation,
+        specialization: specialization,
+      ));
+    }
+  } catch (e) {
+    print('Error fetching doctors: $e');
+  }
+  return doctorList;
+}
+
+class _DoctorListScreenState extends State<DoctorListScreen> {
   // Filtered list of doctors based on the selected specialty
   late List<Doctor> doctors;
 
   @override
   void initState() {
     super.initState();
+    fetchAndFilterDoctors();
+  }
+
+  void fetchAndFilterDoctors() async {
+    // Fetch the doctors asynchronously
+    List<Doctor> allDoctors = await fetchDoctors();
+
     // Filter doctors based on the provided specialty
-    doctors = allDoctors
-        .where((doctor) => doctor.specialty == widget.drSpeciality)
+    List<Doctor> filteredDoctors = allDoctors
+        .where((doctor) => doctor.specialization == widget.drSpeciality)
         .toList();
+
+    // Update the state with the filtered doctors
+    setState(() {
+      doctors = filteredDoctors;
+    });
   }
 
   @override
@@ -173,8 +101,8 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                       Navigator.pop(context);
                     },
                     child: Container(
-                        height: 45,
-                        width: 45,
+                        height: screenWidth * 0.1,
+                        width: screenWidth * 0.1,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(17),
                           color: Colors.white,
@@ -186,11 +114,11 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                         )),
                   ),
                   SizedBox(
-                    width: screenWidth * 0.05,
+                    width: screenWidth * 0.17,
                   ),
                   Text(
                     widget.drSpeciality,
-                    style: GoogleFonts.rubik(
+                    style: GoogleFonts.poppins(
                       fontSize: screenWidth * 0.07,
                       fontWeight: FontWeight.w600,
                     ),
@@ -229,7 +157,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                                 ),
                                 clipBehavior: Clip.antiAlias,
                                 child: Image.asset(
-                                  doctor.imageUrl,
+                                  "assets/jpg/images/profile1.jpg",
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -243,35 +171,28 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                                     children: [
                                       Text(
                                         doctor.name,
-                                        style: GoogleFonts.rubik(
+                                        style: GoogleFonts.poppins(
                                           fontSize: screenWidth * 0.05,
                                           fontWeight: FontWeight.w500,
                                           color: Colors.black,
                                         ),
                                       ),
-                                      SizedBox(height: 4),
+                                      const SizedBox(height: 4),
                                       Text(
                                         doctor.clinicName,
-                                        style: GoogleFonts.rubik(
+                                        style: GoogleFonts.poppins(
                                           fontSize: screenWidth * 0.04,
                                           fontWeight: FontWeight.w400,
                                           color: Colors.black,
                                         ),
                                       ),
-                                      SizedBox(height: 4),
+                                      const SizedBox(height: 4),
                                       Text(
-                                        doctor.specialty,
-                                        style: GoogleFonts.rubik(
+                                        doctor.specialization,
+                                        style: GoogleFonts.poppins(
                                           fontSize: screenWidth * 0.04,
                                           fontWeight: FontWeight.w400,
                                           color: Colors.grey,
-                                        ),
-                                      ),
-                                      const Align(
-                                        alignment: Alignment.centerRight,
-                                        child: Icon(
-                                          Icons.favorite_border_rounded,
-                                          color: Colors.black,
                                         ),
                                       ),
                                     ],
@@ -290,8 +211,9 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                                     builder: (context) => BookAppointment(
                                       doctorName: doctors[index].name,
                                       clinicName: doctors[index].clinicName,
-                                      specialty: doctors[index].specialty,
-                                      doctorImage: doctors[index].imageUrl,
+                                      specialty: doctors[index].specialization,
+                                      doctorImage:
+                                          "assets/jpg/images/profile1.jpg",
                                     ),
                                   ),
                                 );
@@ -307,7 +229,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                               ),
                               child: Text(
                                 'Book Appointment',
-                                style: GoogleFonts.rubik(
+                                style: GoogleFonts.poppins(
                                   fontSize: screenWidth * 0.045,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.white,
