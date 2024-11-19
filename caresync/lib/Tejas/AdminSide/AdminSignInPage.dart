@@ -13,7 +13,6 @@ class AdminSignInPage extends StatefulWidget {
 }
 
 class _AdminSignInPageState extends State<AdminSignInPage> {
-  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -21,7 +20,6 @@ class _AdminSignInPageState extends State<AdminSignInPage> {
 
   bool _isPasswordVisible = false;
   final _formKey = GlobalKey<FormState>();
-  bool _nameErrorVisible = false;
   bool _emailErrorVisible = false;
   bool _passwordErrorVisible = false;
 
@@ -30,7 +28,6 @@ class _AdminSignInPageState extends State<AdminSignInPage> {
     super.initState();
     _checkLoginState();
   }
-
 
   Future<void> _checkLoginState() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -46,70 +43,64 @@ class _AdminSignInPageState extends State<AdminSignInPage> {
   }
 
   Future<void> _signInAdmin() async {
-    if (_formKey.currentState?.validate() != true) return;
+  if (_formKey.currentState?.validate() != true) return;
 
-    final name = _nameController.text.trim();
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
+  final email = _emailController.text.trim();
+  final password = _passwordController.text.trim();
 
-    try {
-      final adminDoc = await _firestore.collection('Caresync').doc('admin').get();
+  try {
+    // Step 1: Sign in the user using Firebase Authentication
+    UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
 
-      if (adminDoc.exists) {
-        // Admin account already exists, validate credentials
-        final adminData = adminDoc.data();
-        if (adminData?['email'] == email && adminData?['password'] == password) {
-          // Correct credentials, save login state
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setBool('isLoggedIn', true);
+    // Step 2: Check if the logged-in user is an admin in Firestore
+    final adminDoc = await _firestore.collection('CareSync').doc('admin').get();
 
-          // Correct credentials, log in the admin
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
-          );
-        } else {
-          // Credentials do not match
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Admin account already exists. Please use the correct credentials to log in.'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      } else {
-        // No admin account exists, create one
-        await _auth.createUserWithEmailAndPassword(email: email, password: password);
-        await _firestore.collection('CareSync').doc('admin').set({
-          'name': name,
-          'email': email,
-          'password': password,
-        });
+    if (adminDoc.exists) {
+      final adminData = adminDoc.data();
 
+      // Step 3: Check if the logged-in admin's email matches Firestore data
+      if (adminData?['email'] == email) {
+        // Admin email is valid, save login state
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool('isLoggedIn', true);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Admin account created successfully. You are now logged in.'),
-            backgroundColor: Colors.green,
-          ),
-        );
-
+        // Navigate to the admin home screen
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
+      } else {
+        // The logged-in email is not an admin's email
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Incorrect admin credentials. Please check your email and password.'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
-    } catch (e) {
+    } else {
+      // Admin document does not exist in Firestore
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error: ${e.toString()}'),
+        const SnackBar(
+          content: Text('Admin account does not exist.'),
           backgroundColor: Colors.red,
         ),
       );
     }
+  } catch (e) {
+    // Handle Firebase Authentication error
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Error: ${e.toString()}'),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
+}
+
 
   Future<void> _resetPassword() async {
     final email = _emailController.text.trim();
@@ -192,32 +183,6 @@ class _AdminSignInPageState extends State<AdminSignInPage> {
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.05),
-                  FadeInUp(
-                    child: TextFormField(
-                      controller: _nameController,
-                      onChanged: (value) {
-                        setState(() {
-                          _nameErrorVisible = value.isEmpty;
-                        });
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Enter your name',
-                        prefixIcon: Icon(Icons.person_outline, size: iconSize),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        errorText:
-                            _nameErrorVisible ? 'Please enter your name' : null,
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your name';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.02),
                   FadeInUp(
                     child: TextFormField(
                       controller: _emailController,
@@ -304,20 +269,17 @@ class _AdminSignInPageState extends State<AdminSignInPage> {
                       onPressed: _signInAdmin,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromRGBO(14, 190, 127, 1),
-                        padding: EdgeInsets.symmetric(
-                            vertical: screenHeight * 0.015),
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
                       ),
                       child: Text(
                         'Sign In',
-                        style: TextStyle(
-                          fontSize: fontSizeButton,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                        style: TextStyle(fontSize: fontSizeButton),
                       ),
                     ),
                   ),
-                  SizedBox(height: screenHeight * 0.02),
                 ],
               ),
             ),

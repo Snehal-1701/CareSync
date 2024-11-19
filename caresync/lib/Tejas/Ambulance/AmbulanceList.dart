@@ -14,7 +14,7 @@ class AmbulanceListScreen extends StatefulWidget {
 
 class _AmbulanceListScreenState extends State<AmbulanceListScreen> {
   final DatabaseReference _ambulancesRef = FirebaseDatabase.instance.ref().child('CareSync/ambulances');
-  List<Map<String, String>> _ambulances = [];
+  final List<Map<String, String>> _ambulances = [];
 
   @override
   void initState() {

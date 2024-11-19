@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AddAmbulancePage extends StatefulWidget {
+  const AddAmbulancePage({super.key});
+
   @override
   _AddAmbulancePageState createState() => _AddAmbulancePageState();
 }
@@ -42,7 +44,7 @@ class _AddAmbulancePageState extends State<AddAmbulancePage> {
         'charges': charges,
       }).then((_) {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Ambulance added successfully!")));
+            const SnackBar(content: Text("Ambulance added successfully!")));
         _ambulanceNameController.clear();
         _phoneController.clear();
         _locationController.clear();
@@ -53,7 +55,7 @@ class _AddAmbulancePageState extends State<AddAmbulancePage> {
       });
     } else {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Please fill all fields")));
+          .showSnackBar(const SnackBar(content: Text("Please fill all fields")));
     }
   }
 
@@ -80,7 +82,7 @@ class _AddAmbulancePageState extends State<AddAmbulancePage> {
           ),
 
           Padding(
-            padding: EdgeInsets.fromLTRB(16.0, 70, 16, 0),
+            padding: const EdgeInsets.fromLTRB(16.0, 70, 16, 0),
             child: Column(
               children: [
                 // Custom AppBar
@@ -113,7 +115,7 @@ class _AddAmbulancePageState extends State<AddAmbulancePage> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      SizedBox(width: 10,),
+                      const SizedBox(width: 10,),
                       // IconButton(
                       //   icon: const Icon(Icons.shopping_cart),
                       //   onPressed: _goToCart,
@@ -171,7 +173,7 @@ class _AddAmbulancePageState extends State<AddAmbulancePage> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          prefixIcon: Icon(Icons.car_repair),
+                          prefixIcon: const Icon(Icons.car_repair),
                         ),
                       ),
                       const SizedBox(height: 30),

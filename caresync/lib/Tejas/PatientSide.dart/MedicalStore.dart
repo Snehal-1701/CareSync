@@ -1,10 +1,11 @@
 import 'package:caresync/Tejas/Model%20Class/MedicalStoreModel.dart';
-import 'package:caresync/Tejas/Model%20Class/ProductModel.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../Model Class/ProductModel.dart';
 import 'MedicineCategories.dart';
-import 'Cart.dart';
+
+import 'package:carousel_slider/carousel_slider.dart';
 
 class MedicalStore extends StatefulWidget {
   const MedicalStore({super.key});
@@ -15,7 +16,9 @@ class MedicalStore extends StatefulWidget {
 
 class _MedicalStore extends State<MedicalStore> {
   List<Product> cartItems = [];
-
+  List<MedicalStoresModel> listOfMedicals = [];
+  List<String> categories = [];
+  List<String> storeIdList = [];
   List<String> carouselImages = [
     "assets/jpg/MedicalStoreCaraoiusal/M1.jpg",
     "assets/jpg/MedicalStoreCaraoiusal/M2.jpg",
@@ -25,52 +28,57 @@ class _MedicalStore extends State<MedicalStore> {
     "assets/jpg/MedicalStoreCaraoiusal/M6.jpg",
   ];
 
-  void _goToCart() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const Cart(),
-      ),
-    );
+  @override
+  void initState() {
+    super.initState();
+    fetchMedicalStores();
   }
 
-  List<MedicalStoresModel> listOfMedicals = [
-    MedicalStoresModel(
-      title: "MediCure Pharmacy",
-      address: "Address: 778 Locust View Drive Oakland, CA",
-      phoneNo: "Contact No: 9730775888",
-      image: "assets/png/MedicalStores/Store1.png",
-    ),
-    MedicalStoresModel(
-      title: "MediCure Pharmacy",
-      address: "Address: 778 Locust View Drive Oakland, CA",
-      phoneNo: "Contact No: 9730775888",
-      image: "assets/png/MedicalStores/Store2.png",
-    ),
-    MedicalStoresModel(
-      title: "MediCure Pharmacy",
-      address: "Address: 778 Locust View Drive Oakland, CA",
-      phoneNo: "Contact No: 9730775888",
-      image: "assets/png/MedicalStores/Store3.png",
-    ),
-    MedicalStoresModel(
-      title: "MediCure Pharmacy",
-      address: "Address: 778 Locust View Drive Oakland, CA",
-      phoneNo: "Contact No: 9730775888",
-      image: "assets/png/MedicalStores/Store4.png",
-    ),
-    MedicalStoresModel(
-      title: "MediCure Pharmacy",
-      address: "Address: 778 Locust View Drive Oakland, CA",
-      phoneNo: "Contact No: 9730775888",
-      image: "assets/png/MedicalStores/Store1.png",
-    ),
-    MedicalStoresModel(
-      title: "MediCure Pharmacy",
-      address: "Address: 778 Locust View Drive Oakland, CA",
-      phoneNo: "Contact No: 9730775888",
-      image: "assets/png/MedicalStores/Store2.png",
-    ),
-  ];
+  Future<void> fetchMedicalStores() async {
+  try {
+    final querySnapshot = await FirebaseFirestore.instance.collection('Medical Stores').get();
+     storeIdList = querySnapshot.docs.map((catDoc) {
+          return catDoc.id; // Category names
+        }).toList();
+        for(int i=0; i<storeIdList.length; i++) {
+          print("----------------${storeIdList[i]}");
+        }
+
+    List<MedicalStoresModel> medicals = [];
+
+    for (var doc in querySnapshot.docs) {
+      try {
+        // Fetch categories for each medical store
+        final categoriesSnapshot = await doc.reference.collection('categories').get();
+
+        categories = categoriesSnapshot.docs.map((catDoc) {
+          return catDoc.id; // Category names
+        }).toList();
+
+        List<String> categoryImages = categoriesSnapshot.docs.map((catDoc) {
+          return (catDoc.data()['image_url'] ?? '') as String; // Explicit cast to String
+        }).toList();
+
+        medicals.add(MedicalStoresModel(
+          title: doc.data()['name'] ?? 'No Name',
+          address: doc.data()['address'] ?? 'No Address',
+          phoneNo: doc.data()['phone'] ?? 'No Phone',
+          image: doc.data()['image_url'] ?? '',
+          categoryImages: categoryImages, categories: [],
+        ));
+      } catch (e) {
+        print("Error processing document ${doc.id}: $e");
+      }
+    }
+
+    setState(() {
+      listOfMedicals = medicals;
+    });
+  } catch (e) {
+    print("Error fetching medical stores: $e");
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -111,20 +119,19 @@ class _MedicalStore extends State<MedicalStore> {
                         Navigator.pop(context);
                       },
                       child: Container(
-                          height: screenWidth * 0.1, 
-                          width: screenWidth * 0.1,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(17),
-                            color: Colors.white,
-                          ),
-                          child: const Icon(
-                            size: 30,
-                            Icons.arrow_back_ios_new_rounded,
-                            color: Colors.grey,
-                          )
+                        height: screenWidth * 0.1,
+                        width: screenWidth * 0.1,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(17),
+                          color: Colors.white,
                         ),
+                        child: const Icon(
+                          size: 30,
+                          Icons.arrow_back_ios_new_rounded,
+                          color: Colors.grey,
+                        ),
+                      ),
                     ),
-                    
                     Text(
                       'Medical Stores',
                       style: GoogleFonts.poppins(
@@ -132,15 +139,12 @@ class _MedicalStore extends State<MedicalStore> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(width: screenWidth*0.09,),
-                    // IconButton(
-                    //   icon: const Icon(Icons.shopping_cart),
-                    //   onPressed: _goToCart,
-                    // ),
+                    SizedBox(width: screenWidth * 0.09),
                   ],
                 ),
 
-                SizedBox(height: screenHeight * 0.019), 
+                SizedBox(height: screenHeight * 0.019),
+
                 // Search bar
                 TextField(
                   decoration: InputDecoration(
@@ -155,7 +159,7 @@ class _MedicalStore extends State<MedicalStore> {
                   ),
                 ),
 
-                SizedBox(height: screenHeight * 0.03), 
+                SizedBox(height: screenHeight * 0.03),
 
                 // Carousel slider
                 CarouselSlider(
@@ -201,26 +205,24 @@ class _MedicalStore extends State<MedicalStore> {
                     itemBuilder: (BuildContext context, int index) {
                       return Padding(
                         padding: EdgeInsets.symmetric(
-                            horizontal: screenWidth * 0.02, 
-                            vertical: screenHeight * 0.013), 
+                            horizontal: screenWidth * 0.02,
+                            vertical: screenHeight * 0.013),
                         child: GestureDetector(
                           onTap: () {
+                            
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => ProductCategories(),
+                                builder: (context) => ProductCategories(
+                                  // categories: listOfMedicals[index].categories,
+                                  categoryImages: listOfMedicals[index].categoryImages,
+                                  storeId: storeIdList[index],
+                                  
+                                ),
                               ),
                             );
                           },
                           child: Container(
                             decoration: BoxDecoration(
-                              // gradient: const LinearGradient(
-                              //   colors: [
-                              //     Color.fromRGBO(255, 255, 255, 0.9),
-                              //     Color.fromRGBO(220, 220, 220, 0.6),
-                              //   ],
-                              //   begin: Alignment.topLeft,
-                              //   end: Alignment.bottomRight,
-                              // ),
                               color: Colors.white,
                               boxShadow: [
                                 BoxShadow(
@@ -235,10 +237,9 @@ class _MedicalStore extends State<MedicalStore> {
                             child: Row(
                               children: [
                                 Container(
-                                  //padding: EdgeInsets.all(screenWidth * 0.10),
                                   margin: EdgeInsets.symmetric(
                                       horizontal: screenWidth * 0.04,
-                                      vertical: screenHeight * 0.020), 
+                                      vertical: screenHeight * 0.020),
                                   width: screenWidth * 0.25,
                                   height: screenHeight * 0.12,
                                   decoration: BoxDecoration(
@@ -252,14 +253,14 @@ class _MedicalStore extends State<MedicalStore> {
                                       ),
                                     ],
                                   ),
-                                  child: Image.asset(
+                                  child: Image.network(
                                     listOfMedicals[index].image,
                                     width: 100,
                                     height: 100,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
-                                const SizedBox(width: 10), 
+                                const SizedBox(width: 10),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,

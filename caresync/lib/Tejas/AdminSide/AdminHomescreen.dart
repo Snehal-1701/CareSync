@@ -1,13 +1,12 @@
 import 'package:caresync/Snehal/landingpage.dart';
 import 'package:caresync/Tejas/AdminSide/AddAmbulance.dart';
-import 'package:caresync/Tejas/AdminSide/AdimiJson.dart';
+import 'package:caresync/Tejas/AdminSide/AddStoreScreen.dart';
 import 'package:caresync/Tejas/AdminSide/AmbulancesList.dart';
+import 'package:caresync/Tejas/AdminSide/Storelist.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'MedicalStoresList.dart';
-import 'AddMedicalStores.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -115,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AdminJsonManager()),
+                              builder: (context) => const StoreListScreen()),
                         );
                       },
                       child: Container(
@@ -233,16 +232,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: const Color.fromRGBO(14, 190, 126, 220),
                 child: Column(
                   children: [
-                    DrawerHeader(
+                    const DrawerHeader(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.admin_panel_settings,
+                          Icon(Icons.admin_panel_settings,
                               size: 60, color: Colors.white),
-                          const SizedBox(height: 10),
+                          SizedBox(height: 10),
                           Text(
-                            _adminName,
-                            style: const TextStyle(
+                            "CareSync",
+                            style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,
                             ),
@@ -256,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  const AddMedicalStorePage()),
+                                  const AddStoreScreen()),
                         );
                         setState(() => isDrawerOpen = false); // Close drawer
                       },
@@ -281,7 +280,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AddAmbulancePage()),
+                              builder: (context) => const AddAmbulancePage()),
                         );
                         setState(() => isDrawerOpen = false); // Close drawer
                       },

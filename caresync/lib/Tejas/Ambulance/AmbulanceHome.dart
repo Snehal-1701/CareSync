@@ -5,13 +5,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:caresync/Tejas/Ambulance/AmbulanceList.dart';
 
 class AmbulanceBookingHome extends StatefulWidget {
+  const AmbulanceBookingHome({super.key});
+
   @override
   _AmbulanceBookingHomeState createState() => _AmbulanceBookingHomeState();
 }
 
 class _AmbulanceBookingHomeState extends State<AmbulanceBookingHome> {
   final DatabaseReference _ambulancesRef = FirebaseDatabase.instance.ref().child('CareSync/ambulances');
-  List<String> _ambulanceTypes = [];
+  final List<String> _ambulanceTypes = [];
 
   @override
   void initState() {

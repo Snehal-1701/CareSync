@@ -7,6 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class PatientProfilePage extends StatefulWidget {
+  const PatientProfilePage({super.key});
+
   @override
   _PatientProfilePageState createState() => _PatientProfilePageState();
 }

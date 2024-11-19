@@ -18,7 +18,7 @@ class AmbulanceDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DatabaseReference _ambulanceRef = FirebaseDatabase.instance
+    final DatabaseReference ambulanceRef = FirebaseDatabase.instance
         .ref()
         .child('CareSync/ambulances/$ambulanceType/$ambulanceId');
 
@@ -36,7 +36,7 @@ class AmbulanceDetailsScreen extends StatelessWidget {
           ),
         ),
         child: FutureBuilder<DataSnapshot>(
-          future: _ambulanceRef.get(),
+          future: ambulanceRef.get(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -215,11 +215,11 @@ class AmbulanceDetailsScreen extends StatelessWidget {
     String pickupLocation = _pickupController.text;
     String dropoffLocation = _dropoffController.text;
 
-    DatabaseReference _bookingsRef =
+    DatabaseReference bookingsRef =
         FirebaseDatabase.instance.ref().child('CareSync/bookings').push();
 
     try {
-      await _bookingsRef.set({
+      await bookingsRef.set({
         'ambulanceId': ambulanceId,
         'ambulanceType': ambulanceType,
         'ambulancePhone': ambulanceData['phone'],

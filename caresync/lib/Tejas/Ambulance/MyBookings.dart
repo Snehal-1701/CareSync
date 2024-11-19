@@ -3,6 +3,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MyAmbulanceBookingsScreen extends StatefulWidget {
+  const MyAmbulanceBookingsScreen({super.key});
+
   @override
   _MyAmbulanceBookingsScreenState createState() =>
       _MyAmbulanceBookingsScreenState();

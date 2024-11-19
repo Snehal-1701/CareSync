@@ -121,7 +121,7 @@ class _AppDrawerState extends State<AppDrawer>
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    PatientProfilePage()),
+                                    const PatientProfilePage()),
                           );
                         },
                         child: CircleAvatar(
@@ -155,7 +155,7 @@ class _AppDrawerState extends State<AppDrawer>
                 _buildDrawerItem(Icons.medical_services, 'Medical Records',
                     context, const RecordScreen1(), 4),
                     _buildDrawerItem(Icons.collections_bookmark, 'My Bookings',
-                    context, MyAmbulanceBookingsScreen(), 5),
+                    context, const MyAmbulanceBookingsScreen(), 5),
                 const Divider(),
                 ListTile(
                   leading: AnimatedContainer(

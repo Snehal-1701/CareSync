@@ -384,6 +384,7 @@ import 'package:caresync/Komal/Ayurveda/Ayurveda.dart';
 import 'package:caresync/Komal/ChatApp/Messages.dart';
 import 'package:caresync/Komal/Notification.dart';
 import 'package:caresync/Snehal/dr_speciality/specilisation.dart';
+import 'package:caresync/Tejas/AdminSide/Storelist.dart';
 import 'package:caresync/Tejas/Ambulance/AmbulanceHome.dart';
 import 'package:caresync/Tejas/PatientSide.dart/Cart.dart';
 import 'package:caresync/Tejas/PatientSide.dart/MedicalStore.dart';
@@ -420,10 +421,10 @@ class _PatientHomeScreenState extends State<PatientHomeScreen>
 
   final List<Widget> _gridPages = [
     const DoctorCategories(),
-    const MedicalStore(),
+    const StoreListScreen(),
     const AyurvedaGridScreen(),
     const Page1(),
-    AmbulanceBookingHome(),
+    const AmbulanceBookingHome(),
     const Page1(),
   ];
 

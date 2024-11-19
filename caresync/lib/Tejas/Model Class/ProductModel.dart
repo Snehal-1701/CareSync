@@ -3,7 +3,7 @@ class Product {
   final dynamic price;
    dynamic mrp;
   final dynamic image;
-  final dynamic rating;
+ dynamic rating;
   dynamic liked;
   int quantity;
   bool isInCart;
@@ -13,9 +13,12 @@ class Product {
     required this.price,
      this.mrp,
     required this.image,
-    required this.rating,
-    required this.liked,
+    this.rating,
+    this.liked,
     this.quantity = 1,
     this.isInCart = false, 
   });
 }
+
+
+

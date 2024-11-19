@@ -1,110 +1,84 @@
+import 'dart:developer';
+
+import 'package:caresync/Tejas/Model%20Class/productdetails.dart';
 import 'package:caresync/Tejas/PatientSide.dart/Cart.dart';
 import 'package:caresync/Tejas/Model%20Class/ProductModel.dart';
 import 'package:caresync/Tejas/PatientSide.dart/Wishlist.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class BabyCare extends StatefulWidget {
-  const BabyCare({super.key});
+  // const BabyCare({super.key});
+  final String categoryName;
+  final dynamic storeId;
+
+  const BabyCare({super.key, required this.categoryName, required this.storeId});
 
   @override
   State createState() => _BabyCareState();
 }
 
-class _BabyCareState extends State {
-  List<Product> medicines = [
-    Product(
-      name: 'Pampers Baby Dry Pants (M) 20',
-      price: 369.00,
-      mrp: 00.00,
-      image: "assets/png/Category7/C7Product1.png",
-      rating: 4.8,
-      quantity: 0,
-      liked: false,
-    ),
-    Product(
-      name: "Dexolac Stage 2 (After 6 Months) Powder 400 gm (Refill Pack)",
-      price: 460.00,
-      mrp: 00.00,
-      image: "assets/png/Category7/C7Product2.png",
-      rating: 4.6,
-      quantity: 0,
-      liked: false,
-    ),
-    Product(
-      name: "Johnson's Baby Cream 100 gm",
-      price: 180.50,
-      mrp: 190.00,
-      image: "assets/png/Category7/C7Product3.png",
-      rating: 4.2,
-      quantity: 0,
-      liked: false,
-    ),
-    Product(
-      name: "Johnson's Baby Skincare Wipes 72's",
-      price: 140.00,
-      mrp: 280.00,
-      image: "assets/png/Category7/C7Product4.png",
-      rating: 4.8,
-      quantity: 0,
-      liked: false,
-    ),
-    Product(
-      name: "Nestle Cerelac Stage 4 (12 Months+) Powder 300 gm- Multigrain & Fruits (Refill Pack)",
-      price: 330.00,
-      mrp: 00.00,
-      image: "assets/png/Category7/C7Product5.png",
-      rating: 4.5,
-      quantity: 0,
-      liked: false,
-    ),
-    Product(
-      name: "Mothercare Flexi Straw Toddler Cup - Blue",
-      price: 509.15,
-      mrp: 599.00,
-      image: "assets/png/Category7/C7Product6.png",
-      rating: 4.2,
-      quantity: 0,
-      liked: false,
-    ),
-    Product(
-      name: "Nestle Nan Pro 1 (Upto 6 Months) Powder 400 gm (Refill Pack)",
-      price: 825.00,
-      mrp: 0.00,
-      image: "assets/png/Category7/C7Product7.png",
-      rating: 3.8,
-      quantity: 0,
-      liked: false,
-    ),
-    Product(
-      name: "Pampers Active Baby (XL) 32's",
-      price: 999.00,
-      mrp: 0.00,
-      image: "assets/png/Category7/C7Product8.png",
-      rating: 4.2,
-      quantity: 0,
-      liked: false,
-    ),
-  ];
+class _BabyCareState extends State<BabyCare> {
+  List<String> productIdList = [];
+  List<ProductData> listOfMedicals = [];
+  List<ProductData> productsList = [];
 
-  void _toggleCart(Product product) {
-    setState(() {
-      if (product.quantity == 0) {
-        product.quantity = 1;
-        cartItems.add(product);
-      } else {
-        product.quantity = 0;
-        cartItems.remove(product);
-      }
-    });
+  @override
+  void initState() {
+    // TODO: implement activate
+    super.initState();
+    log("STORE ID :- ${widget.storeId}");
+    log("CATOGORIY NAME  ${widget.categoryName}");
+    fetchProducts();
   }
 
-  void _toggleLike(int index) {
-    setState(() {
-      final product = medicines[index];
-      product.liked = !product.liked;
-      product.liked ? likedItems.add(product) : likedItems.remove(product);
-    });
+  Future<void> fetchProducts() async {
+    try {
+      // Debugging: Print widget values
+      print("Store ID: ${widget.storeId}");
+      print("Category Name: ${widget.categoryName}");
+
+      // Validate inputs to avoid invalid path errors
+      if (widget.storeId == null || widget.storeId!.isEmpty) {
+        throw Exception("Store ID is null or empty.");
+      }
+      if (widget.categoryName.isEmpty) {
+        throw Exception("Category Name is null or empty.");
+      }
+
+      // Fetch the products from Firestore
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection(
+              'Medical Stores/${widget.storeId}/categories/${widget.categoryName}/products')
+          .get();
+
+      // Clear existing product list
+      productsList.clear();
+
+      // Iterate through the products and extract required data
+      for (var productDoc in querySnapshot.docs) {
+        productsList.add(
+          ProductData(
+            name: productDoc.data()['name'] ?? 'No Name',
+            productId: productDoc.id,
+            price: productDoc.data()['price'] ?? 0,
+            image: productDoc.data()['imageUrl'] ?? '',
+            mrp: productDoc.data()['mrp'] ?? 0,
+          ),
+        );
+      }
+
+      // Debugging: Print all fetched products
+      for (var product in productsList) {
+        print("Product: $product");
+      }
+
+      // Update UI
+      setState(() {});
+    } catch (e) {
+      print("Error fetching products: $e");
+    }
   }
 
   void _goToLikedPage() {
@@ -122,6 +96,49 @@ class _BabyCareState extends State {
       ),
     );
   }
+
+  List<Map<String, String>> categoryUrl = [
+    {
+      "category": "Baby Care",
+      "url": "assets/jpg/BabyCareProduct.jpg",
+    },
+    {
+      "category": "Cough & Cold",
+      "url": "assets/png/CoughColdProduct.png",
+    },
+    {
+      "category": "Ayurvedic",
+      "url": "assets/jpg/AyurvedicProduct.jpg",
+    },
+    {
+      "category": "Orthopaedics",
+      "url": "assets/jpg/OrthopediacsProduct.jpg",
+    },
+    {
+      "category": "Pain Relief",
+      "url": "assets/jpg/C4.jpg",
+    },
+    {
+      "category": "Skin Care",
+      "url": "assets/jpg/SkinCareProduct.jpg",
+    },
+    {
+      "category": "Vitamins",
+      "url": "assets/jpg/VitaminsProduct.jpg",
+    },
+    {
+      "category": "Fitness",
+      "url": "assets/jpg/FitnessProduct.jpg",
+    },
+    {
+      "category": "First Aid",
+      "url": "assets/jpg/FirstaidProduct.jpg",
+    },
+    {
+      "category": "General Discomfort",
+      "url": "assets/jpg/GeneralDiscomfortProduct.jpg",
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -167,12 +184,11 @@ class _BabyCareState extends State {
                             size: 30,
                             Icons.arrow_back_ios_new_rounded,
                             color: Colors.grey,
-                          )
-                        ),
+                          )),
                     ),
-                    SizedBox(width: screenWidth*0.2),
+                    SizedBox(width: screenWidth * 0.03),
                     Text(
-                      'BabyCare',
+                      widget.categoryName,
                       style: GoogleFonts.poppins(
                         fontSize: titleFontSize,
                         fontWeight: FontWeight.w600,
@@ -192,15 +208,30 @@ class _BabyCareState extends State {
                 const SizedBox(height: 25),
                 Container(
                   height: screenHeight * 0.13,
-                  width: screenWidth*2,
+                  width: screenWidth * 2,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
                   ),
-                  child: Image.asset(
-                    "assets/jpg/BabyCareProduct.jpg",
-                    fit: BoxFit.fill,
+                  child: Builder(
+                    builder: (context) {
+                      // Find the matching category from the categoryUrl list
+                      final category = categoryUrl.firstWhere(
+                        (cat) => cat['category'] == widget.categoryName,
+                        orElse: () => {
+                          'category': 'default',
+                          'url': 'assets/jpg/defaultImage.jpg'
+                        },
+                      );
+
+                      // Display the image from the categoryUrl list
+                      return Image.asset(
+                        category['url']!,
+                        fit: BoxFit.fill,
+                      );
+                    },
                   ),
                 ),
+
                 const SizedBox(height: 10),
                 Expanded(
                   child: GridView.builder(
@@ -211,9 +242,10 @@ class _BabyCareState extends State {
                       mainAxisSpacing: 20,
                       childAspectRatio: 0.6,
                     ),
-                    itemCount: medicines.length,
+                    itemCount: productsList.length,
                     itemBuilder: (context, index) {
-                      final medicine = medicines[index];
+                      final medicine = productsList[index];
+                      var quantity = 0;
                       return Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         decoration: BoxDecoration(
@@ -232,7 +264,7 @@ class _BabyCareState extends State {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Center(
-                              child: Image.asset(
+                              child: Image.network(
                                 medicine.image,
                                 height: screenWidth * 0.3,
                               ),
@@ -241,26 +273,13 @@ class _BabyCareState extends State {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.star,
-                                      color: Colors.amber,
-                                      size: 18,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      medicine.rating.toString(),
-                                      style: GoogleFonts.roboto(fontSize: 14),
-                                    ),
-                                  ],
-                                ),
+                                const Spacer(),
                                 GestureDetector(
-                                  onTap: () => _toggleLike(index),
-                                  child: Icon(
+                                  // onTap: () => _toggleLike(index),
+                                  child: const Icon(
                                     Icons.favorite,
                                     size: 20,
-                                    color: medicine.liked ? Colors.red : Colors.grey,
+                                    color: true ? Colors.red : Colors.grey,
                                   ),
                                 ),
                               ],
@@ -297,15 +316,18 @@ class _BabyCareState extends State {
                               ],
                             ),
                             const SizedBox(height: 5),
-                            medicine.quantity == 0
+                            quantity == 0
                                 ? SizedBox(
                                     width: double.infinity,
                                     child: ElevatedButton(
-                                      onPressed: () => _toggleCart(medicine),
+                                      onPressed: () {},
+                                      // onPressed: () => _toggleCart(medicine),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF00CFC1),
+                                        backgroundColor:
+                                            const Color(0xFF00CFC1),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                         ),
                                       ),
                                       child: Text(
@@ -320,7 +342,8 @@ class _BabyCareState extends State {
                                 : SizedBox(
                                     width: double.infinity,
                                     child: ElevatedButton.icon(
-                                      onPressed: () => _toggleCart(medicine),
+                                      onPressed: () {},
+                                      // onPressed: () => _toggleCart(medicine),
                                       icon: const Icon(
                                         Icons.check,
                                         color: Colors.black54,
@@ -335,7 +358,8 @@ class _BabyCareState extends State {
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.white10,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                         ),
                                       ),
                                     ),

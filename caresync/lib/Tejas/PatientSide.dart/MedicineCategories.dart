@@ -1,31 +1,53 @@
+
+import 'package:caresync/Tejas/PatientSide.dart/Cart.dart';
 import 'package:caresync/Tejas/PatientSide.dart/Categories/Ayurvedic.dart';
 import 'package:caresync/Tejas/PatientSide.dart/Categories/BabyCare.dart';
 import 'package:caresync/Tejas/PatientSide.dart/Categories/Cough&Cold.dart';
-import 'package:caresync/Tejas/PatientSide.dart/Categories/FirstAid.dart';
-import 'package:caresync/Tejas/PatientSide.dart/Categories/Fitness.dart';
-import 'package:caresync/Tejas/PatientSide.dart/Categories/GeneralDiscomfort.dart';
-import 'package:caresync/Tejas/PatientSide.dart/Categories/Orthopaedics.dart';
 import 'package:caresync/Tejas/PatientSide.dart/Categories/PainRelief.dart';
-import 'package:caresync/Tejas/PatientSide.dart/Categories/SkinCare.dart';
 import 'package:caresync/Tejas/PatientSide.dart/Categories/Vitamins.dart';
-import 'package:caresync/Tejas/Model%20Class/ProductModel.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'Cart.dart';
-
 
 class ProductCategories extends StatefulWidget {
-  final List<Product> cartItems = [];
+  final List<String> categoryImages;
+  final dynamic storeId;
 
-  ProductCategories({super.key});
+  const ProductCategories(
+      {super.key, required this.categoryImages, required this.storeId});
 
   @override
   State<ProductCategories> createState() => _ProductCategoriesState();
 }
 
 class _ProductCategoriesState extends State<ProductCategories> {
-  List<Product> cartItems = [];
+  List<String> categoryName = [];
+
+  Future<void> fetchCategories() async {
+    // Create a list to store category names
+
+    // Fetch categories from Firestore
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('Medical Stores/${widget.storeId}/categories')
+        .get();
+
+    // Iterate through the documents and extract the 'name' field
+    for (var doc in querySnapshot.docs) {
+      categoryName.add(doc['name']); // Add the 'name' field to the list
+    }
+
+    // Optionally, update the state if you need to use categoryName
+    setState(() {
+      // You can store the category names in a state variable here if needed
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCategories();
+  }
 
   void _goToCart() {
     Navigator.of(context).push(
@@ -44,35 +66,36 @@ class _ProductCategoriesState extends State<ProductCategories> {
   }
 
   List<Map<String, dynamic>> carouselImages = [
-    {'image': "assets/jpg/CategoryCaraiousal/C1.jpg", 'route': const CoughCold()},
-    {'image': "assets/jpg/CategoryCaraiousal/C2.jpg", 'route': const Fitness()},
-    {'image': "assets/jpg/CategoryCaraiousal/C3.jpg", 'route': const Vitamins()},
-    {'image': "assets/jpg/CategoryCaraiousal/C4.jpg", 'route': const PainRelief()},
-    {'image': "assets/jpg/CategoryCaraiousal/C5.jpg", 'route': const FirstAid()},
-    {'image': "assets/jpg/CategoryCaraiousal/C6.jpg", 'route': const GeneralDiscomfort()},
-  ];
-
-  List<Map<String, dynamic>> categories = [
-    {"image": 'assets/png/Categories/Category1.png', "route": const CoughCold()},
-    {"image": 'assets/png/Categories/Category2.png', "route": const Orthopaedics()},
-    {"image": 'assets/jpg/Categories/Category3.jpg', "route": const PainRelief()},
-    {"image": 'assets/png/Categories/Category4.png', "route": const SkinCare()},
-    {"image": 'assets/png/Categories/Category5.png', "route": const Ayurvedic()},
-    {"image": 'assets/jpg/Categories/Category6.jpg', "route": const Vitamins()},
-    {"image": 'assets/png/Categories/Category7.png', "route": const BabyCare()},
-    {"image": 'assets/png/Categories/Category8.png', "route": const Fitness()},
-    {"image": 'assets/png/Categories/Category9.png', "route": const FirstAid()},
-    {"image": 'assets/png/Categories/Category10.png', "route": const GeneralDiscomfort()},
+    {
+      'image': "assets/jpg/CategoryCaraiousal/C1.jpg",
+      'route': const CoughCold()
+    },
+    {
+      'image': "assets/jpg/CategoryCaraiousal/C2.jpg",
+      'route': "babycare",
+    },
+    {
+      'image': "assets/jpg/CategoryCaraiousal/C3.jpg",
+      'route': const Vitamins()
+    },
+    {
+      'image': "assets/jpg/CategoryCaraiousal/C4.jpg",
+      'route': const PainRelief()
+    },
+    {
+      'image': "assets/jpg/CategoryCaraiousal/C5.jpg",
+      'route': const Ayurvedic()
+    },
   ];
 
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    double carouselHeight = screenWidth * 0.4; 
-    int crossAxisCount = screenWidth < 600 ? 2 : 3; 
-    double categoryImageSize = screenWidth * 0.6; 
-    
+    double carouselHeight = screenWidth * 0.4;
+    int crossAxisCount = screenWidth < 600 ? 2 : 3;
+    double categoryImageSize = screenWidth * 0.6;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -102,20 +125,20 @@ class _ProductCategoriesState extends State<ProductCategories> {
                         Navigator.pop(context);
                       },
                       child: Container(
-                          height: screenWidth * 0.1,
-                          width: screenWidth * 0.1,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(17),
-                            color: Colors.white,
-                          ),
-                          child: const Icon(
-                            size: 30,
-                            Icons.arrow_back_ios_new_rounded,
-                            color: Colors.grey,
-                          )
+                        height: screenWidth * 0.1,
+                        width: screenWidth * 0.1,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(17),
+                          color: Colors.white,
                         ),
+                        child: const Icon(
+                          size: 30,
+                          Icons.arrow_back_ios_new_rounded,
+                          color: Colors.grey,
+                        ),
+                      ),
                     ),
-                    SizedBox(width: screenWidth*0.05,),
+                    SizedBox(width: screenWidth * 0.05),
                     Text(
                       'Medicine Categories',
                       style: GoogleFonts.poppins(
@@ -123,11 +146,6 @@ class _ProductCategoriesState extends State<ProductCategories> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    //const Spacer(),
-                    // IconButton(
-                    //   icon: const Icon(Icons.shopping_cart),
-                    //   onPressed: _goToCart,
-                    // ),
                   ],
                 ),
                 SizedBox(height: screenWidth * 0.05),
@@ -171,9 +189,7 @@ class _ProductCategoriesState extends State<ProductCategories> {
                     );
                   }).toList(),
                 ),
-
                 SizedBox(height: screenWidth * 0.07),
-                
                 const Text(
                   'Shop By Category',
                   style: TextStyle(
@@ -181,37 +197,48 @@ class _ProductCategoriesState extends State<ProductCategories> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                
                 Expanded(
-                  child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: crossAxisCount,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      childAspectRatio: 0.8,
-                    ),
-                    itemCount: categories.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          navigateToCategory(context, categories[index]["route"]);
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
-                            shape: BoxShape.circle,
+                  child: widget.categoryImages.isEmpty
+                      ? const Center(child: CircularProgressIndicator())
+                      : GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: crossAxisCount,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                            childAspectRatio: 0.8,
                           ),
-                          child: Center(
-                            child: Image.asset(
-                              categories[index]["image"],
-                              width: categoryImageSize,
-                              height: categoryImageSize,
-                            ),
-                          ),
+                          itemCount: widget.categoryImages.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                // You can add specific navigation logic here based on your requirements
+                                // Example: navigateToCategory(context, categoryScreen);
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => BabyCare(
+                                      categoryName: categoryName[index],
+                                      storeId: widget.storeId,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade300,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Image.network(
+                                    widget.categoryImages[index],
+                                    width: categoryImageSize,
+                                    height: categoryImageSize,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
                 ),
               ],
             ),

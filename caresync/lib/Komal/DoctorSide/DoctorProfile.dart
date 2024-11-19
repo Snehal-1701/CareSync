@@ -59,7 +59,7 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
           qualificationController.text = data['qualification'] ?? '';
           specializationController.text = data['specialization'] ?? '';
           dobController.text = data['dob'] ?? '';
-          _profileImageUrl = data['profileImage'] ?? null;
+          _profileImageUrl = data['profileImage'];
         }
       }
     } catch (e) {
@@ -89,6 +89,7 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
       print('Error uploading image: $e');
       return null;
     }
+    return null;
   }
 
   Future<void> _saveChanges() async {
