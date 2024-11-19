@@ -13,6 +13,9 @@ class RecordScreen1 extends StatefulWidget {
 class _RecordScreen1State extends State<RecordScreen1> {
   @override
   Widget build(BuildContext context) {
+    // Retrieve screen width and height
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       ///MEDICAL RECORD SCREEN
       body: Container(
@@ -29,8 +32,12 @@ class _RecordScreen1State extends State<RecordScreen1> {
           ],
         )),
         child: Padding(
-          padding:
-              const EdgeInsets.only(top: 25.0, left: 15, right: 15, bottom: 15),
+          padding: EdgeInsets.only(
+            top: screenHeight * 0.06,
+            left: screenWidth * 0.04,
+            right: screenWidth * 0.04,
+            bottom: screenHeight * 0.00,
+          ),
           child: Column(
               // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -42,8 +49,8 @@ class _RecordScreen1State extends State<RecordScreen1> {
                         Navigator.pop(context);
                       },
                       child: Container(
-                          height: 45,
-                          width: 45,
+                          height: screenWidth * 0.1,
+                          width: screenWidth * 0.1,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(17),
                             color: Colors.white,
@@ -54,12 +61,12 @@ class _RecordScreen1State extends State<RecordScreen1> {
                             color: Colors.grey,
                           )),
                     ),
-                    const SizedBox(width: 25),
+                    SizedBox(width: screenWidth * 0.14),
 
                     ///TEXT
                     Text(
                       "Medical Records",
-                      style: GoogleFonts.rubik(
+                      style: GoogleFonts.poppins(
                         fontSize: 25,
                         fontWeight: FontWeight.w600,
                         color: Colors.black,
@@ -76,10 +83,10 @@ class _RecordScreen1State extends State<RecordScreen1> {
                       shape: BoxShape.circle,
                       color: Color.fromRGBO(143, 208, 185, 0.416),
                     ),
-                    child: SvgPicture.asset("assets/images/record.svg")),
+                    child: SvgPicture.asset("assets/svg/record.svg")),
                 Text(
                   "Add a Medical Record.",
-                  style: GoogleFonts.rubik(
+                  style: GoogleFonts.poppins(
                     fontSize: 25,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
@@ -90,7 +97,7 @@ class _RecordScreen1State extends State<RecordScreen1> {
                 Text(
                   "A detailed health history helps a doctor diagnose you btter.",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.rubik(
+                  style: GoogleFonts.poppins(
                     fontSize: 18,
                     fontWeight: FontWeight.w400,
                     color: const Color.fromRGBO(103, 114, 148, 1),
@@ -102,7 +109,7 @@ class _RecordScreen1State extends State<RecordScreen1> {
                   child: GestureDetector(
                           onTap: () {
                             Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(builder: (context) => AllRecords()),
+                              MaterialPageRoute(builder: (context) => const AllRecords()),
                             );
                           },
                           child: Container(
@@ -116,7 +123,7 @@ class _RecordScreen1State extends State<RecordScreen1> {
                             ),
                             child: Text(
                               "Add a record",
-                              style: GoogleFonts.rubik(
+                              style: GoogleFonts.poppins(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,

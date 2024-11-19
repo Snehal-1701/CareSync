@@ -32,39 +32,38 @@ class _AllRecordsState extends State<AllRecords> {
         )),
         child: Padding(
           padding: EdgeInsets.only(
-              top: screenHeight * 0.03,
-              left: screenWidth * 0.04,
-              right: screenWidth * 0.04,
-              bottom: screenHeight * 0.02),
+            top: screenHeight * 0.06,
+            left: screenWidth * 0.04,
+            right: screenWidth * 0.04,
+            bottom: screenHeight * 0.00,
+          ),
           child: Column(
             children: [
               Row(
                 children: [
-                  /// ICON - BACK
                   GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      height: screenHeight * 0.06,
-                      width: screenHeight * 0.06,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(17),
-                        color: Colors.white,
-                      ),
-                      child: Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        color: Colors.grey,
-                        size: screenWidth * 0.06,
-                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                          height: screenWidth * 0.1,
+                          width: screenWidth * 0.1,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(17),
+                            color: Colors.white,
+                          ),
+                          child: const Icon(
+                            size: 30,
+                            Icons.arrow_back_ios_new_rounded,
+                            color: Colors.grey,
+                          )),
                     ),
-                  ),
-                  SizedBox(width: screenWidth * 0.05),
+                  SizedBox(width: screenWidth * 0.2),
 
                   /// TEXT
                   Text(
                     "All Records",
-                    style: GoogleFonts.rubik(
+                    style: GoogleFonts.poppins(
                       fontSize: screenWidth * 0.065,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
@@ -78,84 +77,91 @@ class _AllRecordsState extends State<AllRecords> {
                 child: ListView.builder(
                   itemCount: 6,
                   itemBuilder: (context, index) {
-                    return Container(
-                      margin: EdgeInsets.only(top: screenHeight * 0.02),
-                      padding: EdgeInsets.all(screenWidth * 0.03),
-                      height: screenHeight * 0.13,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.white,
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color.fromRGBO(0, 0, 0, 0.2),
-                            blurRadius: 18,
-                            offset: Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          /// IMAGE CONTAINER
-                          Container(
-                            height: screenHeight * 0.1,
-                            width: screenHeight * 0.1,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: const Color.fromRGBO(14, 190, 127, 1),
-                            ),
-                            child: Text(
-                              "23 Feb",
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.rubik(
-                                fontSize: screenWidth * 0.05,
-                                fontWeight: FontWeight.w500,
+                    return Padding(
+                      padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.02, 
+                            vertical: screenHeight * 0.013),
+                      child: Container(
+                        margin: EdgeInsets.only(top: screenHeight * 0.01),
+                        padding: EdgeInsets.all(screenWidth * 0.03),
+                        height: screenHeight * 0.13,
+                        
+                        decoration: BoxDecoration(
                                 color: Colors.white,
-                              ),
-                            ),
-                          ),
-
-                          /// COLUMN - TEXT
-                          Expanded(
-                            child: Padding(
-                              padding:
-                                  EdgeInsets.only(left: screenWidth * 0.02),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Records added by you",
-                                    style: GoogleFonts.rubik(
-                                      fontSize: screenWidth * 0.05,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  Text(
-                                    "Record for username",
-                                    style: GoogleFonts.rubik(
-                                      fontSize: screenWidth * 0.042,
-                                      fontWeight: FontWeight.w400,
-                                      color:
-                                          const Color.fromRGBO(14, 190, 127, 1),
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  Text(
-                                    "1 Prescription",
-                                    style: GoogleFonts.rubik(
-                                      fontSize: screenWidth * 0.040,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.grey,
-                                    ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black87.withOpacity(0.6),
+                                    offset: const Offset(0, 4),
+                                    blurRadius: 6.0,
+                                    spreadRadius: 0.1,
                                   ),
                                 ],
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            /// IMAGE CONTAINER
+                            Container(
+                              height: screenHeight * 0.1,
+                              width: screenHeight * 0.1,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: const Color.fromRGBO(14, 190, 127, 1),
+                              ),
+                              child: Text(
+                                "23 Feb",
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.poppins(
+                                  fontSize: screenWidth * 0.05,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                      
+                            /// COLUMN - TEXT
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    EdgeInsets.only(left: screenWidth * 0.02),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Records added by you",
+                                      style: GoogleFonts.poppins(
+                                        fontSize: screenWidth * 0.05,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Text(
+                                      "Record for username",
+                                      style: GoogleFonts.poppins(
+                                        fontSize: screenWidth * 0.042,
+                                        fontWeight: FontWeight.w400,
+                                        color:
+                                            const Color.fromRGBO(14, 190, 127, 1),
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Text(
+                                      "1 Prescription",
+                                      style: GoogleFonts.poppins(
+                                        fontSize: screenWidth * 0.040,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -225,7 +231,7 @@ class _AllRecordsState extends State<AllRecords> {
                        const SizedBox(width:14),
                        Text(
                         "Upload from gallery",
-                        style: GoogleFonts.rubik(
+                        style: GoogleFonts.poppins(
                           fontSize: 17,
                         ),
                       ),
@@ -241,7 +247,7 @@ class _AllRecordsState extends State<AllRecords> {
                        const SizedBox(width:14),
                        Text(
                         "Upload files",
-                        style: GoogleFonts.rubik(
+                        style: GoogleFonts.poppins(
                           fontSize: 17,
                         ),
                       ),
@@ -254,11 +260,11 @@ class _AllRecordsState extends State<AllRecords> {
                     child: ElevatedButton(
                       onPressed: (){},  
                       style: const ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(Colors.black)
+                        backgroundColor: WidgetStatePropertyAll(Color.fromRGBO(14, 190, 127, 1),)
                       ),
                       child: Text(
                         "Add",
-                        style: GoogleFonts.rubik(
+                        style: GoogleFonts.poppins(
                           fontSize: 16,
                           color: Colors.white
                         ),
