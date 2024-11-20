@@ -46,7 +46,7 @@ class _PatientSignUpPageState extends State<PatientSignUpPage> {
         await _firestore.collection('CareSync')
           .doc('patients')
           .collection('accounts')
-          .doc(userCredential.user!.uid)
+          .doc(_nameController.text.trim())
           .set({
           'name': _nameController.text.trim(),
           'role': 'patient',

@@ -25,12 +25,14 @@ Future<List<Doctor>> fetchDoctors() async {
 
     // Extracting required fields from each document
     for (var doc in querySnapshot.docs) {
+      String doctorId = doc.id; 
       String name = doc['name'];
       String clinicLocation = doc['cliniclocation'];
       String specialization = doc['specialization'];
 
       // Adding to the local list
       doctorList.add(Doctor(
+        doctorId: doctorId,
         name: name,
         clinicName: clinicLocation,
         specialization: specialization,
@@ -43,8 +45,8 @@ Future<List<Doctor>> fetchDoctors() async {
 }
 
 class _DoctorListScreenState extends State<DoctorListScreen> {
-  // Filtered list of doctors based on the selected specialty
-  late List<Doctor> doctors;
+  // Initialize doctors as an empty list
+  late List<Doctor> doctors = [];
 
   @override
   void initState() {
@@ -71,6 +73,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
+    double itemFontSize = screenWidth * 0.04;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
@@ -114,7 +117,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                         )),
                   ),
                   SizedBox(
-                    width: screenWidth * 0.17,
+                    width: screenWidth * 0.05,
                   ),
                   Text(
                     widget.drSpeciality,
@@ -126,122 +129,135 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                 ],
               ),
               Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(16.0),
-                  itemCount: doctors.length,
-                  itemBuilder: (context, index) {
-                    final doctor = doctors[index];
-                    return Container(
-                      margin: EdgeInsets.only(top: screenHeight * 0.02),
-                      padding: EdgeInsets.all(screenWidth * 0.03),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.white,
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color.fromRGBO(0, 0, 0, 0.2),
-                            blurRadius: 18,
-                            offset: Offset(0, 4),
+                child: doctors.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No doctors are available',
+                          style: GoogleFonts.roboto(
+                            fontSize: itemFontSize,
+                            fontWeight: FontWeight.w500,
                           ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                height: screenHeight * 0.13,
-                                width: screenWidth * 0.25,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.all(16.0),
+                        itemCount: doctors.length,
+                        itemBuilder: (context, index) {
+                          final doctor = doctors[index];
+                          return Container(
+                            margin: EdgeInsets.only(top: screenHeight * 0.02),
+                            padding: EdgeInsets.all(screenWidth * 0.03),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.white,
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Color.fromRGBO(0, 0, 0, 0.2),
+                                  blurRadius: 18,
+                                  offset: Offset(0, 4),
                                 ),
-                                clipBehavior: Clip.antiAlias,
-                                child: Image.asset(
-                                  "assets/jpg/images/profile1.jpg",
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding:
-                                      EdgeInsets.only(left: screenWidth * 0.03),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        doctor.name,
-                                        style: GoogleFonts.poppins(
-                                          fontSize: screenWidth * 0.05,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.black,
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      height: screenHeight * 0.13,
+                                      width: screenWidth * 0.25,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Image.asset(
+                                        "assets/jpg/images/profile1.jpg",
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                            left: screenWidth * 0.03),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              doctor.name,
+                                              style: GoogleFonts.poppins(
+                                                fontSize: screenWidth * 0.05,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              doctor.clinicName,
+                                              style: GoogleFonts.poppins(
+                                                fontSize: screenWidth * 0.04,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              doctor.specialization,
+                                              style: GoogleFonts.poppins(
+                                                fontSize: screenWidth * 0.04,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        doctor.clinicName,
-                                        style: GoogleFonts.poppins(
-                                          fontSize: screenWidth * 0.04,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        doctor.specialization,
-                                        style: GoogleFonts.poppins(
-                                          fontSize: screenWidth * 0.04,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: screenHeight * 0.01),
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => BookAppointment(
-                                      doctorName: doctors[index].name,
-                                      clinicName: doctors[index].clinicName,
-                                      specialty: doctors[index].specialization,
-                                      doctorImage:
-                                          "assets/jpg/images/profile1.jpg",
+                                SizedBox(height: screenHeight * 0.01),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => BookAppointment(
+                                            doctorId: doctors[index].doctorId,
+                                            doctorName: doctors[index].name,
+                                            clinicName:
+                                                doctors[index].clinicName,
+                                            specialty:
+                                                doctors[index].specialization,
+                                            doctorImage:
+                                                "assets/jpg/images/profile1.jpg",
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color.fromRGBO(
+                                          14, 190, 126, 1),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: screenHeight * 0.015),
+                                    ),
+                                    child: Text(
+                                      'Book Appointment',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: screenWidth * 0.045,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    const Color.fromRGBO(14, 190, 126, 1),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
                                 ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: screenHeight * 0.015),
-                              ),
-                              child: Text(
-                                'Book Appointment',
-                                style: GoogleFonts.poppins(
-                                  fontSize: screenWidth * 0.045,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white,
-                                ),
-                              ),
+                              ],
                             ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
               ),
             ],
           ),

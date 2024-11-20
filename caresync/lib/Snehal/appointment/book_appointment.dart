@@ -8,13 +8,16 @@ class BookAppointment extends StatefulWidget {
   final String clinicName;
   final String specialty;
   final String doctorImage;
+  final String doctorId;
 
   // Constructor to accept doctor data
-  const BookAppointment({super.key, 
+  const BookAppointment({
+    super.key,
     required this.doctorName,
     required this.clinicName,
     required this.specialty,
     required this.doctorImage,
+    required this.doctorId,
   });
   @override
   State<BookAppointment> createState() => _BookAppointmentState();
@@ -64,7 +67,7 @@ class _BookAppointmentState extends State<BookAppointment> {
                       Navigator.pop(context);
                     },
                     child: Container(
-                        height: screenWidth * 0.1, 
+                        height: screenWidth * 0.1,
                         width: screenWidth * 0.1,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(17),
@@ -146,7 +149,7 @@ class _BookAppointmentState extends State<BookAppointment> {
                                 color: Colors.black,
                               ),
                             ),
-              
+
                             // SizedBox(height: 2),
                             Text(
                               widget.specialty,
@@ -200,11 +203,21 @@ class _BookAppointmentState extends State<BookAppointment> {
 
               Padding(
                 padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
-                child: TextField(
-                  controller: nameController,
+                child: TextFormField(
+                  controller: numberController,
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your mobile number';
+                    } else if (!RegExp(r'^\d*$').hasMatch(value)) {
+                      return 'Please enter numbers only';
+                    } else if (value.length != 10) {
+                      return 'Mobile number must be 10 digits';
+                    }
+                    return null; // Return null if no error
+                  },
                   decoration: InputDecoration(
                     labelText: 'Contact Number',
-                    // prefixIcon: Icon(Icons.email, size: iconSize),
                     labelStyle: GoogleFonts.poppins(
                       fontSize: screenWidth * 0.045,
                       fontWeight: FontWeight.w400,
@@ -240,7 +253,6 @@ class _BookAppointmentState extends State<BookAppointment> {
                       });
                     }
                   },
-                  
                   decoration: InputDecoration(
                     suffixIcon: const Icon(Icons.calendar_month_outlined),
                     labelText: 'Date',
@@ -289,16 +301,47 @@ class _BookAppointmentState extends State<BookAppointment> {
               Center(
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>  SelectTime(
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (context) =>  SelectTime(
+                    //         doctorId: widget.doctorId,
+                    //         doctorName: widget.doctorName,
+                    //         specialty: widget.specialty,
+                    //         clinicName: widget.clinicName,
+                    //         doctorImage: widget.doctorImage,
+                    //       )),
+                    // );
+                    if (nameController.text.isEmpty) {
+                      _showError("Please enter patient name");
+                    } else if (numberController.text.isEmpty) {
+                      _showError("Please enter mobile number");
+                    } else if (numberController.text.length != 10) {
+                      _showError("Mobile number must be 10 digits");
+                    } else if (dateController.text.isEmpty) {
+                      _showError("Please select a date");
+                    } else if (!RegExp(r'^\d+$')
+                        .hasMatch(numberController.text)) {
+                      _showError(
+                          "Please enter numbers only for the mobile number");
+                    } else {
+                      // If all fields are valid, navigate to the next screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SelectTime(
+                            patientName: nameController.text.trim(),
+                            number : numberController.text.trim(),
+                            selectedDate: dateController.text.trim(),
+                            doctorId: widget.doctorId,
                             doctorName: widget.doctorName,
                             specialty: widget.specialty,
                             clinicName: widget.clinicName,
                             doctorImage: widget.doctorImage,
-                          )),
-                    );
+                          ),
+                        ),
+                      );
+                    }
                   },
                   child: Container(
                     margin: EdgeInsets.only(top: screenHeight * 0.029),
@@ -324,6 +367,26 @@ class _BookAppointmentState extends State<BookAppointment> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showError(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 

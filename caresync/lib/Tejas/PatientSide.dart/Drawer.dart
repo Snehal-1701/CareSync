@@ -1,3 +1,4 @@
+import 'package:caresync/Snehal/appointment/myappointments.dart';
 import 'package:caresync/Snehal/landingpage.dart';
 import 'package:caresync/Snehal/medical_records/medical_record_screen_1.dart';
 import 'package:caresync/Tejas/Ambulance/MyBookings.dart';
@@ -145,7 +146,7 @@ class _AppDrawerState extends State<AppDrawer>
                 ),
                 const Divider(),
                 _buildDrawerItem(Icons.calendar_today, 'My Appointments',
-                    context, const Cart(), 0),
+                    context, const Myappointments(), 0),
                 _buildDrawerItem(
                     Icons.list, 'My Orders', context, const OrdersPage(), 1),
                 _buildDrawerItem(
