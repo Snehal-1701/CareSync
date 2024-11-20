@@ -16,7 +16,7 @@ class Product {
     this.rating,
     this.liked,
     this.quantity = 1,
-    this.isInCart = false, 
+    this.isInCart = false, required String id, 
   });
 }
 

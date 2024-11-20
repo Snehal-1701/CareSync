@@ -14,11 +14,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AppDrawer extends StatefulWidget {
   final bool isDarkMode;
   final VoidCallback toggleTheme;
+  //final String patientId;
 
   const AppDrawer({
     super.key,
     required this.isDarkMode,
     required this.toggleTheme,
+   // required this.patientId,
   });
 
   @override
@@ -31,6 +33,8 @@ class _AppDrawerState extends State<AppDrawer>
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   int selectedIndex = -1;
   late AnimationController _controller;
+
+  
 
   void _onItemTapped(int index, BuildContext context, Widget page) {
     setState(() {
@@ -144,14 +148,14 @@ class _AppDrawerState extends State<AppDrawer>
                   ),
                 ),
                 const Divider(),
-                _buildDrawerItem(Icons.calendar_today, 'My Appointments',
-                    context, const Cart(), 0),
+                //_buildDrawerItem(Icons.calendar_today, 'My Appointments',
+                   // context, const Cart(), 0),
                 _buildDrawerItem(
                     Icons.list, 'My Orders', context, const OrdersPage(), 1),
-                _buildDrawerItem(
-                    Icons.shopping_cart, 'My Cart', context, const Cart(), 2),
-                _buildDrawerItem(
-                    Icons.favorite, 'Wishlist', context, const Wishlist(), 3),
+                //_buildDrawerItem(
+                  //  Icons.shopping_cart, 'My Cart', context, const Cart(), 2),
+                //_buildDrawerItem(
+                   // Icons.favorite, 'Wishlist', context, Wishlist(patientId: widget.patientId,), 3),
                 _buildDrawerItem(Icons.medical_services, 'Medical Records',
                     context, const RecordScreen1(), 4),
                     _buildDrawerItem(Icons.collections_bookmark, 'My Bookings',

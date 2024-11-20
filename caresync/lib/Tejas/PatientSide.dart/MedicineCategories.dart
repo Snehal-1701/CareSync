@@ -1,4 +1,3 @@
-
 import 'package:caresync/Tejas/PatientSide.dart/Cart.dart';
 import 'package:caresync/Tejas/PatientSide.dart/Categories/Ayurvedic.dart';
 import 'package:caresync/Tejas/PatientSide.dart/Categories/BabyCare.dart';
@@ -7,6 +6,7 @@ import 'package:caresync/Tejas/PatientSide.dart/Categories/PainRelief.dart';
 import 'package:caresync/Tejas/PatientSide.dart/Categories/Vitamins.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -23,6 +23,23 @@ class ProductCategories extends StatefulWidget {
 
 class _ProductCategoriesState extends State<ProductCategories> {
   List<String> categoryName = [];
+
+  Future<void> navigateToBabyCare(
+      BuildContext context, String categoryName, dynamic storeId) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final patientId = currentUser?.uid ?? '';
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BabyCare(
+          categoryName: categoryName,
+          storeId: storeId,
+          patientId: patientId,
+        ),
+      ),
+    );
+  }
 
   Future<void> fetchCategories() async {
     // Create a list to store category names
@@ -49,13 +66,13 @@ class _ProductCategoriesState extends State<ProductCategories> {
     fetchCategories();
   }
 
-  void _goToCart() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const Cart(),
-      ),
-    );
-  }
+  // void _goToCart() {
+  //   Navigator.of(context).push(
+  //     MaterialPageRoute(
+  //       builder: (context) => Cart(patientId: widget.patientId),
+  //     ),
+  //   );
+  // }
 
   void navigateToCategory(BuildContext context, Widget categoryScreen) {
     Navigator.of(context).push(
@@ -68,23 +85,23 @@ class _ProductCategoriesState extends State<ProductCategories> {
   List<Map<String, dynamic>> carouselImages = [
     {
       'image': "assets/jpg/CategoryCaraiousal/C1.jpg",
-      'route': const CoughCold()
+      
     },
     {
       'image': "assets/jpg/CategoryCaraiousal/C2.jpg",
-      'route': "babycare",
+      
     },
     {
       'image': "assets/jpg/CategoryCaraiousal/C3.jpg",
-      'route': const Vitamins()
+      
     },
     {
       'image': "assets/jpg/CategoryCaraiousal/C4.jpg",
-      'route': const PainRelief()
+      
     },
     {
       'image': "assets/jpg/CategoryCaraiousal/C5.jpg",
-      'route': const Ayurvedic()
+      
     },
   ];
 
@@ -159,9 +176,9 @@ class _ProductCategoriesState extends State<ProductCategories> {
                     return Builder(
                       builder: (BuildContext context) {
                         return GestureDetector(
-                          onTap: () {
-                            navigateToCategory(context, imagePath['route']);
-                          },
+                          // onTap: () {
+                          //   navigateToCategory(context, imagePath['route']);
+                          // },
                           child: Container(
                             width: screenWidth,
                             margin: const EdgeInsets.symmetric(horizontal: 1.0),
@@ -212,16 +229,20 @@ class _ProductCategoriesState extends State<ProductCategories> {
                           itemBuilder: (context, index) {
                             return GestureDetector(
                               onTap: () {
-                                // You can add specific navigation logic here based on your requirements
-                                // Example: navigateToCategory(context, categoryScreen);
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => BabyCare(
-                                      categoryName: categoryName[index],
-                                      storeId: widget.storeId,
-                                    ),
-                                  ),
-                                );
+                                navigateToBabyCare(context, categoryName[index],
+                                    widget.storeId);
+
+                                // // You can add specific navigation logic here based on your requirements
+                                // // Example: navigateToCategory(context, categoryScreen);
+                                // Navigator.of(context).push(
+                                //   MaterialPageRoute(
+                                //     builder: (context) => BabyCare(
+                                //       categoryName: categoryName[index],
+                                //       storeId: widget.storeId,
+                                //       patientId: patientId,
+                                //     ),
+                                //   ),
+                                // );
                               },
                               child: Container(
                                 decoration: BoxDecoration(

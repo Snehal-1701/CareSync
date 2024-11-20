@@ -414,8 +414,8 @@ class _PatientHomeScreenState extends State<PatientHomeScreen>
 
   final List<Widget> _bottomNavPages = [
     const PatientHomeScreen(),
-    const Wishlist(),
-    const Cart(),
+    //const Wishlist(),
+    //const Cart(),
     const OrdersPage(),
   ];
 
@@ -510,7 +510,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen>
             setState(() {
               isDarkMode = !isDarkMode;
             });
-          },
+          }, 
         ),
         body: Stack(
           children: [
