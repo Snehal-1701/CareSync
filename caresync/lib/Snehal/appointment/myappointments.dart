@@ -135,8 +135,8 @@ class _MyappointmentsState extends State<Myappointments> {
                       return Center(
                         child: Text(
                           'No Appointments are booked.',
-                          style: GoogleFonts.roboto(
-                            fontSize: itemFontSize,
+                          style: GoogleFonts.rubik(
+                            fontSize: screenWidth * 0.05,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -203,11 +203,10 @@ class _MyappointmentsState extends State<Myappointments> {
                                   Text(
                                     'Status: ${appointmentList[index].status}',
                                     style: GoogleFonts.poppins(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: appointmentList[index].status == 'pending'
-                                          ? Colors.orange
-                                          : Colors.green,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      color: colorText(appointmentList[index].status)
+                                      
                                     ),
                                   ),
                                 ],
@@ -225,6 +224,16 @@ class _MyappointmentsState extends State<Myappointments> {
         ),
       ),
     );
+  }
+
+  dynamic colorText(String status) {
+    if(status == 'pending'){
+      return Colors.orange;
+    }else if(status == 'Accepted') {
+      return Colors.green;
+    }else {
+      return Colors.red;
+    }
   }
 }
 

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:caresync/Snehal/dr_speciality/doctors.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -32,25 +34,79 @@ class _ProductCategoriesState extends State<DoctorCategories> {
   ];
 
   List<Map<String, dynamic>> carouselImages = [
-    {'image': "assets/jpg/carousel_jpg/cardiology.jpg", 'route': const DoctorListScreen(drSpeciality: "Cardiology")},
-    {'image': "assets/jpg/carousel_jpg/dermatology.jpg", 'route': const DoctorListScreen(drSpeciality: "Dermatology")},
-    {'image': "assets/jpg/carousel_jpg/general_medicine.jpg", 'route': const DoctorListScreen(drSpeciality: "General Medicine")},
-    {'image': "assets/jpg/carousel_jpg/gynecology.jpg", 'route': const DoctorListScreen(drSpeciality: "Gynecology")},
-    {'image': "assets/jpg/carousel_jpg/odontology.jpg", 'route': const DoctorListScreen(drSpeciality: "Odontology")},
-    {'image': "assets/jpg/carousel_jpg/oncology.jpg", 'route': const DoctorListScreen(drSpeciality: "Oncology")},
-    {'image': "assets/jpg/carousel_jpg/ophatamology.jpg", 'route': const DoctorListScreen(drSpeciality: "Ophthalmology")},
-    {'image': "assets/jpg/carousel_jpg/orthopedics.jpg", 'route': const DoctorListScreen(drSpeciality: "Orthopedics")},
+    {
+      'image': "assets/jpg/carousel_jpg/cardiology.jpg",
+      'route': const DoctorListScreen(drSpeciality: "Cardiology")
+    },
+    {
+      'image': "assets/jpg/carousel_jpg/dermatology.jpg",
+      'route': const DoctorListScreen(drSpeciality: "Dermatology")
+    },
+    {
+      'image': "assets/jpg/carousel_jpg/general_medicine.jpg",
+      'route': const DoctorListScreen(drSpeciality: "General Medicine")
+    },
+    {
+      'image': "assets/jpg/carousel_jpg/gynecology.jpg",
+      'route': const DoctorListScreen(drSpeciality: "Gynecology")
+    },
+    {
+      'image': "assets/jpg/carousel_jpg/odontology.jpg",
+      'route': const DoctorListScreen(drSpeciality: "Odontology")
+    },
+    {
+      'image': "assets/jpg/carousel_jpg/oncology.jpg",
+      'route': const DoctorListScreen(drSpeciality: "Oncology")
+    },
+    {
+      'image': "assets/jpg/carousel_jpg/ophatamology.jpg",
+      'route': const DoctorListScreen(drSpeciality: "Ophthalmology")
+    },
+    {
+      'image': "assets/jpg/carousel_jpg/orthopedics.jpg",
+      'route': const DoctorListScreen(drSpeciality: "Orthopedics")
+    },
   ];
 
   List<Map<String, dynamic>> drSpecialisation = [
-    {'image': "assets/svg/specialisation/Cardiology Specialties Button # 4.svg", 'route': const DoctorListScreen(drSpeciality: "Cardiology")},
-    {'image': "assets/svg/specialisation/Dermatology Specialties Button # 3.svg", 'route': const DoctorListScreen(drSpeciality: "Dermatology")},
-    {'image': "assets/svg/specialisation/Specialties Button # 1 (1).svg", 'route': const DoctorListScreen(drSpeciality: "General Medicine")},
-    {'image': "assets/svg/specialisation/Gynecology Specialties Button # 10.svg", 'route': const DoctorListScreen(drSpeciality: "Gynecology")},
-    {'image': "assets/svg/specialisation/Odontology Specialties Button # 12.svg", 'route': const DoctorListScreen(drSpeciality: "Odontology")},
-    {'image': "assets/svg/specialisation/Oncology Specialties Button # 11.svg", 'route': const DoctorListScreen(drSpeciality: "Oncology")},
-    {'image': "assets/svg/specialisation/Ophtamology Specialties Button # 2.svg", 'route': const DoctorListScreen(drSpeciality: "Ophthalmology")},
-    {'image': "assets/svg/specialisation/Orthopedics Specialties Button # 13.svg", 'route': const DoctorListScreen(drSpeciality: "Orthopedics")},
+    {
+      'image':
+          "assets/svg/specialisation/Cardiology Specialties Button # 4.svg",
+      'route': const DoctorListScreen(drSpeciality: "Cardiology")
+    },
+    {
+      'image':
+          "assets/svg/specialisation/Dermatology Specialties Button # 3.svg",
+      'route': const DoctorListScreen(drSpeciality: "Dermatology")
+    },
+    {
+      'image': "assets/svg/specialisation/Specialties Button # 1 (1).svg",
+      'route': const DoctorListScreen(drSpeciality: "General Medicine")
+    },
+    {
+      'image':
+          "assets/svg/specialisation/Gynecology Specialties Button # 10.svg",
+      'route': const DoctorListScreen(drSpeciality: "Gynecology")
+    },
+    {
+      'image':
+          "assets/svg/specialisation/Odontology Specialties Button # 12.svg",
+      'route': const DoctorListScreen(drSpeciality: "Odontology")
+    },
+    {
+      'image': "assets/svg/specialisation/Oncology Specialties Button # 11.svg",
+      'route': const DoctorListScreen(drSpeciality: "Oncology")
+    },
+    {
+      'image':
+          "assets/svg/specialisation/Ophtamology Specialties Button # 2.svg",
+      'route': const DoctorListScreen(drSpeciality: "Ophthalmology")
+    },
+    {
+      'image':
+          "assets/svg/specialisation/Orthopedics Specialties Button # 13.svg",
+      'route': const DoctorListScreen(drSpeciality: "Orthopedics")
+    },
   ];
 
   @override
@@ -90,7 +146,7 @@ class _ProductCategoriesState extends State<DoctorCategories> {
                         Navigator.pop(context);
                       },
                       child: Container(
-                        height: screenWidth * 0.1, 
+                        height: screenWidth * 0.1,
                         width: screenWidth * 0.1,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(17),
@@ -121,36 +177,33 @@ class _ProductCategoriesState extends State<DoctorCategories> {
                     enlargeCenterPage: true,
                   ),
                   items: carouselImages.map((imageData) {
-                    return Builder(
-                      builder: (BuildContext context) {
-                        return GestureDetector(
-                          onTap: () {
-                            navigateToCategory(context, imageData['route']);
-                          },
-                          child: Container(
-                            width: screenWidth,
-                            margin: const EdgeInsets.symmetric(horizontal: 1.0),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  offset: Offset(0, 4),
-                                  blurRadius: 6.0,
-                                ),
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.asset(
-                                imageData['image'],
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        );
+                    log(imageData['image']);
+                    return GestureDetector(
+                      onTap: () {
+                        navigateToCategory(context, imageData['route']);
                       },
+                      child: Container(
+                        width: screenWidth,
+                        margin: const EdgeInsets.symmetric(horizontal: 1.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black26,
+                              offset: Offset(0, 4),
+                              blurRadius: 6.0,
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.asset(
+                            imageData['image'],
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
                     );
                   }).toList(),
                 ),
@@ -174,7 +227,8 @@ class _ProductCategoriesState extends State<DoctorCategories> {
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () {
-                          navigateToCategory(context, drSpecialisation[index]['route']);
+                          navigateToCategory(
+                              context, drSpecialisation[index]['route']);
                         },
                         child: Container(
                           child: Center(

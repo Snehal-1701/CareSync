@@ -8,16 +8,16 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'DoctorHomeScreen.dart';
 
-class PatientListScreen extends StatefulWidget {
-  const PatientListScreen({super.key});
+class RejectedPatientListScreen extends StatefulWidget {
+  const RejectedPatientListScreen({super.key});
 
   @override
-  _PatientListScreenState createState() =>
-      _PatientListScreenState();
+  _RejectedPatientListScreenState createState() =>
+      _RejectedPatientListScreenState();
 }
 
-class _PatientListScreenState
-    extends State<PatientListScreen> {
+class _RejectedPatientListScreenState
+    extends State<RejectedPatientListScreen> {
   late Future<List<DrAppointment>> patients;
   List<DrAppointment> upcomingPatientList = [];
 
@@ -66,7 +66,7 @@ class _PatientListScreenState
       }
 
       for (int i = 0; i < appointmentList.length; i++) {
-        if (appointmentList[i].status == 'Accepted') {
+        if (appointmentList[i].status == 'Rejected') {
           upcomingPatientList.add(appointmentList[i]);
         }
       }
@@ -123,7 +123,7 @@ class _PatientListScreenState
                   ),
                 ),
                 Text(
-                  'Accepted Patients',
+                  'Rejected Patients',
                   style: GoogleFonts.poppins(
                     fontSize: 30,
                     fontWeight: FontWeight.w600,
@@ -147,7 +147,7 @@ class _PatientListScreenState
                   child: Padding(
                     padding: EdgeInsets.all(20.0),
                     child: Text(
-                      'No Accepted Appointments yet',
+                      'No Rejected Appointments yet',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -219,11 +219,11 @@ class _PatientListScreenState
                                       SizedBox(
                                           height: screenHeight * 0.015),
                                       Text(
-                                        "Status : Accepted",
+                                        "Status : Rejected",
                                         style: GoogleFonts.poppins(
                                           fontSize: screenWidth * 0.045,
                                           fontWeight: FontWeight.w600,
-                                          color: Colors.green,
+                                          color: Colors.red,
                                         ),
                                       ),
                                     ],

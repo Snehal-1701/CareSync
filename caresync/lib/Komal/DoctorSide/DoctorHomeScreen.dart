@@ -1,279 +1,13 @@
-// import 'package:caresync/Komal/ChatApp/Messages.dart';
-// import 'package:caresync/Komal/Notification.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
-
-// import 'Drawer.dart';
-
-// class DoctorHomeScreen extends StatefulWidget {
-//   const DoctorHomeScreen({super.key});
-
-//   @override
-//   _DoctorHomeScreenState createState() => _DoctorHomeScreenState();
-// }
-
-// class _DoctorHomeScreenState extends State{
-//   final FirebaseAuth _auth = FirebaseAuth.instance;
-//   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-//   final int _selectedIndex = 0;
-//   bool isDarkMode = false;
-
-//   final List<String> imageList = [
-//     'assets/jpg/DoctorSide/appint.jpg',
-//     'assets/jpg/DoctorSide/history.jpg',
-//     'assets/jpg/DoctorSide/pateint.jpg',
-//     'assets/jpg/DoctorSide/earning.jpg',
-//   ];
-
-//   void _toggleTheme() {
-//     setState(() {
-//       isDarkMode = !isDarkMode;
-//     });
-//   }
-
-//   ThemeData _getTheme() {
-//     return isDarkMode
-//         ? ThemeData.dark().copyWith(
-//             primaryColor: Colors.teal,
-//             scaffoldBackgroundColor: Colors.grey[900],
-//           )
-//         : ThemeData.light().copyWith(
-//             primaryColor: Colors.blue,
-//             scaffoldBackgroundColor: Colors.white,
-//           );
-//   }
-
-//   String _doctorName = '';
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _loadDoctorData();
-//   }
-
-//   Future<void> _loadDoctorData() async {
-//     try {
-//       User? user = _auth.currentUser; 
-//       if (user != null) {
-//         // Fetch patient data from Firestore
-//         DocumentSnapshot snapshot = await _firestore.collection('CareSync').doc('doctors').collection('accounts').doc(user.uid).get();
-
-//         if (snapshot.exists) {
-//           Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-
-//           setState(() {
-//             _doctorName = data['name'] ;
-//           });
-          
-//         }
-//       }
-//     } catch (e) {
-//       print('Error fetching doctor data: $e');
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     double width = MediaQuery.of(context).size.width;
-//     double height = MediaQuery.of(context).size.height;
-
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       theme: _getTheme(),
-//       home: Scaffold(
-//         drawer: AppDrawer(
-//           isDarkMode: isDarkMode,
-//           toggleTheme: _toggleTheme,
-//         ),
-//         body: Stack(
-//           children: [
-//             Container(
-//               decoration: const BoxDecoration(
-//                 gradient: LinearGradient(
-//                   begin: Alignment.topLeft,
-//                   end: Alignment.bottomRight,
-//                   stops: [0.0, 0.3, 0.7, 1.0],
-//                   colors: [
-//                     Color.fromRGBO(97, 206, 255, 220),
-//                     Colors.white,
-//                     Colors.white,
-//                     Color.fromRGBO(14, 190, 126, 220),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//             Padding(
-//               padding: EdgeInsets.fromLTRB(16.0, height * 0.06, 16, 0),
-//               child: SingleChildScrollView(
-//                 child: Column(
-//                   children: [
-//                     _buildAppBar(width),
-//                     Container(
-//                       margin: const EdgeInsets.only(top: 20),
-//                       decoration: BoxDecoration(
-//                         color: Colors.black12.withOpacity(0.1),
-//                         borderRadius: BorderRadius.circular(10),
-//                       ),
-//                       child: Column(
-//                         children: [
-//                           _buildWelcomeSection(width, height),
-//                           Container(
-//                             decoration: BoxDecoration(
-//                               color: Colors.white10.withOpacity(0.5),
-//                               borderRadius: const BorderRadius.only(
-//                                 topLeft: Radius.circular(40),
-//                                 topRight: Radius.circular(40),
-//                               ),
-//                             ),
-
-//                               padding: const EdgeInsets.fromLTRB(16.0, 20, 16, 16),
-//                             height: height * 0.7,
-//                             child: GridView.builder(
-//                               shrinkWrap: true,
-//                               physics: const NeverScrollableScrollPhysics(),
-//                               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-//                                 crossAxisCount: 2,
-//                                 mainAxisSpacing: 20,
-//                                 crossAxisSpacing: 30,
-//                               ),
-//                               itemCount: imageList.length,
-//                               itemBuilder: (context, index) {
-//                                 return GestureDetector(
-//                                   onTap: () {
-//                                     // Navigator.push(
-//                                     //   context,
-//                                     //   MaterialPageRoute(
-//                                     //     builder: (context) => _gridPages[index],
-//                                     //   ),
-//                                     // );
-//                                   },
-//                                   child: _buildGridItem(index, imageList[index]),
-//                                 );
-//                               },
-//                             ),
-//                           ),
-//                         ],
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   Widget _buildAppBar(double width) {
-//     return Row(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: [
-//         Builder(
-//           builder: (context) {
-//             return IconButton(
-//               icon: const Icon(Icons.menu, size: 32,color: Colors.black87,),
-//               onPressed: () => Scaffold.of(context).openDrawer(),
-//             );
-//           },
-//         ),
-//         const SizedBox(width: 60),
-//         Text(
-//           'Dashboard',
-//           style: GoogleFonts.lato(fontSize: width * 0.07, fontWeight: FontWeight.bold),
-//         ),
-//         const Spacer(),
-//         IconButton(
-//           icon: const Icon(Icons.notification_add_outlined, size: 32, color: Colors.black87,),
-//           onPressed: () {
-//             Navigator.of(context).push(
-//               MaterialPageRoute(
-//                 builder: (context) => const NotificationApp(),
-//               ),
-//             );
-//           },
-//         ),
-//         IconButton(
-//           icon: const Icon(Icons.chat_outlined, size: 32, color: Colors.black87,),
-//           onPressed: () {
-//             Navigator.of(context).push(
-//               MaterialPageRoute(
-//                 builder: (context) => const MessageScreen(),
-//               ),
-//             );
-//           },
-//         ),
-//       ],
-//     );
-//   }
-
-//   Widget _buildWelcomeSection(double width, double height) {
-//     return Padding(
-//       padding: EdgeInsets.all(width * 0.04),
-//       child: Row(
-//         mainAxisAlignment: MainAxisAlignment.spaceAround,
-//         children: [
-//           Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               const SizedBox(height: 4),
-//               Text(
-//                 'Welcome',
-//                 style: GoogleFonts.lato(fontSize: width * 0.07,fontWeight: FontWeight.bold),
-//               ),
-//               const SizedBox(height: 4),
-//               Text(_doctorName,
-//               style: GoogleFonts.lato(fontSize: width*0.06,color: Colors.black),
-//               ),
-//             ],
-//           ),
-//           Image.asset(
-//             'assets/png/DoctorSide/logo.png',
-//             width: width * 0.39,
-//             height: height * 0.18,
-//             fit: BoxFit.fill,
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   Widget _buildGridItem(int index, String imagePath) {
-//     return Container(
-//       padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-//       decoration: BoxDecoration(
-//         boxShadow: [
-//                     BoxShadow(
-//             color: Colors.black.withOpacity(0.2),
-//             spreadRadius: 2,
-//             blurRadius: 5,
-//             offset: const Offset(0, 3),
-//           ),
-//         ],
-//         borderRadius: BorderRadius.circular(15),
-//         color: Colors.white,
-//       ),
-//       child: ClipRRect(
-//         borderRadius: BorderRadius.circular(15),
-//         child: Image.asset(
-//           imagePath,
-//           fit: BoxFit.cover,
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
+import 'dart:developer';
 import 'package:animate_do/animate_do.dart';
 import 'package:caresync/Komal/ChatApp/Messages.dart';
 import 'package:caresync/Komal/Notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pie_chart/pie_chart.dart';
 import 'Drawer.dart';
 
 class DoctorHomeScreen extends StatefulWidget {
@@ -283,29 +17,136 @@ class DoctorHomeScreen extends StatefulWidget {
   State createState() => _DoctorHomeScreenState();
 }
 
-class _DoctorHomeScreenState extends State
-    with SingleTickerProviderStateMixin {
+class _DoctorHomeScreenState extends State with SingleTickerProviderStateMixin {
+
+  late Future<List<Map<String, String>>> patients;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool isDarkMode = false;
   String _patientName = '';
   late AnimationController _controller;
 
-  final List<String> imageList = [
-    'assets/jpg/DoctorSide/appint.jpg',
-    'assets/jpg/DoctorSide/history.jpg',
-    'assets/jpg/DoctorSide/pateint.jpg',
-    'assets/jpg/DoctorSide/earning.jpg',
+  List<String> patientKey = [
+    'Total Patients',
+    'Accepted Patients',
+    'Upcoming Patients',
+    'Rejected Patients'
   ];
+  int totalPatients = 0;
+  int acceptedPatients = 0;
+  int rejectedPatients = 0;
+  int upcomingPatients = 0;
+  List<Map<String, int>> patientCount = [
+    {'Total Patients': 0},
+    {'Accepted Patients': 0},
+    {'Upcoming Patients': 0},
+    {'Rejected Patients': 0},
+  ];
+  Map<String, double> patientCountMap = {
+    'Total Patients': 0,
+    'Accepted Patients': 0,
+    'Upcoming Patients': 0,
+    'Rejected Patients': 0,
+  };
 
   @override
   void initState() {
+    log("initstate");
     super.initState();
+    patients = fetchAppointments();
+    assignData();
     _loadDoctorData();
     _controller = AnimationController(
       duration: const Duration(seconds: 10),
       vsync: this,
     )..repeat(reverse: true);
+  }
+
+  Future<List<Map<String, String>>> fetchAppointments() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final doctorId = currentUser?.uid;
+
+    // Ensure currentUser is not null and doctorId is valid
+    if (doctorId == null || doctorId.isEmpty) {
+      print('Error: No logged-in user or invalid doctor ID.');
+      return [];
+    }
+
+    List<Map<String, String>> appointmentList = [];
+
+    try {
+      // Fetch the appointments collection
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('CareSync')
+          .doc('doctors')
+          .collection('accounts')
+          .doc(doctorId)
+          .collection('appointments')
+          .get();
+
+      // Process each document in the snapshot
+      for (var doc in querySnapshot.docs) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+
+        // Ensure 'status' field exists and is a String
+        if (data.containsKey('status') && data['status'] is String) {
+          String status = data['status'];
+          appointmentList.add({'status': status});
+        } else {
+          print(
+              'Document ${doc.id} is missing "status" or it is not a String.');
+        }
+      }
+    } catch (e) {
+      print('Error fetching appointments: $e');
+    }
+    setState(() {
+      
+    });
+    return appointmentList;
+  }
+
+  void assignData() async {
+    try {
+      // Await the resolution of the Future
+      List<Map<String, String>> patientData = await patients;
+
+      // Iterate over the resolved list
+      totalPatients = patientData.length;
+      for (var patient in patientData) {
+        log("--------------${patient['status']}");
+        if (patient['status'] == 'pending') {
+          upcomingPatients++;
+        } else if (patient['status'] == 'Accepted') {
+          acceptedPatients++;
+        } else if (patient['status'] == 'Rejected') {
+          rejectedPatients++;
+        }
+        setState(() {
+          
+        });
+      }
+
+      log("Accepted patient count _____${acceptedPatients}");
+      log("Total patient count _____${totalPatients}");
+      log("Rejected patient count _____${rejectedPatients}");
+      log("Upcoming patient count _____${upcomingPatients}");
+      patientCount[0]['Total Patients'] = totalPatients;
+      patientCount[1]['Accepted Patients'] = acceptedPatients;
+      patientCount[2]['Upcoming Patients'] = upcomingPatients;
+      patientCount[3]['Rejected Patients'] = rejectedPatients;
+      // Assign values to the map
+      patientCountMap['Total Patients'] = totalPatients.toDouble();
+      patientCountMap['Accepted Patients'] = acceptedPatients.toDouble();
+      patientCountMap['Upcoming Patients'] = upcomingPatients.toDouble();
+      patientCountMap['Rejected Patients'] = rejectedPatients.toDouble();
+
+      log("Patient count map: $patientCountMap");
+
+      setState(() {});
+    } catch (e) {
+      print('Error assigning data: $e');
+    }
   }
 
   @override
@@ -318,8 +159,12 @@ class _DoctorHomeScreenState extends State
     try {
       User? user = _auth.currentUser;
       if (user != null) {
-        DocumentSnapshot snapshot =
-            await _firestore.collection('CareSync').doc('doctors').collection('accounts').doc(user.uid).get();
+        DocumentSnapshot snapshot = await _firestore
+            .collection('CareSync')
+            .doc('doctors')
+            .collection('accounts')
+            .doc(user.uid)
+            .get();
         if (snapshot.exists) {
           Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
           setState(() {
@@ -332,75 +177,78 @@ class _DoctorHomeScreenState extends State
     }
   }
 
-  ThemeData _getTheme() {
-    return isDarkMode
-        ? ThemeData.dark().copyWith(
-            primaryColor: const Color.fromRGBO(14, 190, 127, 1),
-            scaffoldBackgroundColor: Colors.grey[900],
-          )
-        : ThemeData.light().copyWith(
-            primaryColor: Colors.blue,
-            scaffoldBackgroundColor: Colors.white,
-          );
-  }
-
-
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    final gradientList = <List<Color>>[
+      [
+        Color.fromRGBO(10, 201, 244,1), 
+        Color.fromRGBO(255, 255, 255,0.6),
+      ],
+      [
+        Color.fromRGBO(129, 182, 205, 1),
+        Color.fromRGBO(91, 253, 199, 1),
+      ],
+      [
+        Color.fromRGBO(104, 238, 190, 1), // Base color
+        Color.fromRGBO(104, 238, 190,0.8),
+      ]
+    ];
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: _getTheme(),
-      home: Scaffold(
-        drawer: AppDrawer(
-          isDarkMode: isDarkMode,
-          toggleTheme: () {
-            setState(() {
-              isDarkMode = !isDarkMode;
-            });
-          },
-        ),
-        body: Stack(
-          children: [
-            AnimatedBuilder(
-              animation: _controller,
-              builder: (context, child) {
-                return Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Color.lerp(
-                            const Color.fromRGBO(97, 206, 255, 220),
-                            const Color.fromRGBO(14, 190, 126, 220),
-                            _controller.value)!,
-                        Colors.white,
-                        Colors.white,
-                        Color.lerp(
-                            const Color.fromRGBO(97, 206, 255, 220),
-                            const Color.fromRGBO(14, 190, 126, 220),
-                            1 - _controller.value)!,
-                      ],
-                    ),
+    return Scaffold(
+      drawer: AppDrawer(
+        isDarkMode: isDarkMode,
+        toggleTheme: () {
+          setState(() {
+            isDarkMode = !isDarkMode;
+          });
+        },
+      ),
+      body: Stack(
+        children: [
+          AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              return Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color.lerp(
+                          const Color.fromRGBO(97, 206, 255, 220),
+                          const Color.fromRGBO(14, 190, 126, 220),
+                          _controller.value)!,
+                      Colors.white,
+                      Colors.white,
+                      Color.lerp(
+                          const Color.fromRGBO(97, 206, 255, 220),
+                          const Color.fromRGBO(14, 190, 126, 220),
+                          1 - _controller.value)!,
+                    ],
                   ),
-                );
-              },
-            ),
-            SpinPerfect(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(0, height * 0.06, 0, 0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      _buildAppBar(width),
-                      const SizedBox(height: 15,),
-                      Column(
+                ),
+              );
+            },
+          ),
+          SpinPerfect(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(0, height * 0.06, 0, 0),
+              child: Column(
+                children: [
+                  _buildAppBar(width),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  _buildWelcomeSection(width, height),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
                         children: [
-                          _buildWelcomeSection(width, height),
                           Container(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 15),
                             decoration: const BoxDecoration(
                               //color: Colors.white10.withOpacity(0.5),
                               borderRadius: BorderRadius.only(
@@ -419,25 +267,141 @@ class _DoctorHomeScreenState extends State
                                 mainAxisSpacing: 20,
                                 crossAxisSpacing: 30,
                               ),
-                              itemCount: imageList.length,
+                              itemCount: patientCount.length,
                               itemBuilder: (context, index) {
-                                return _buildGridItem(index, imageList[index]);
+                                return Container(
+                                  height: 200,
+                                  width: 200,
+                                  // child:
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        Color.fromRGBO(
+                                            104, 238, 190, 1), // Base color
+                                        Color.fromRGBO(104, 238, 190,
+                                            0.8), // Slightly transparent shade
+                                        Color.fromRGBO(255, 255, 255,
+                                            0.5), // Light highlight for shine
+                                      ],
+                                      begin: Alignment
+                                          .topLeft, // Start of the gradient
+                                      end: Alignment
+                                          .bottomRight, // End of the gradient
+                                    ),
+                                    borderRadius: BorderRadius.circular(
+                                        15), // Rounded corners
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.teal
+                                            .withOpacity(0.3), // Shadow color
+                                        offset: Offset(5, 5), // Shadow position
+                                        blurRadius: 10, // Shadow blur
+                                      ),
+                                    ],
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          patientKey[index],
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                      // SizedBox(height:10),
+                                      Positioned(
+                                        top: 100,
+                                        left: 26,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(25.0),
+                                          height: 100,
+                                          width: 100,
+                                          // decoration: const BoxDecoration(
+                                          //     shape: BoxShape.circle,
+                                          //     color: Color.fromRGBO(
+                                          //         10, 201, 244, 1)),
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape
+                                                .circle, // Makes the container circular
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Color.fromRGBO(10, 201, 244,1), // Base color
+                                                Color.fromRGBO(255, 255, 255,0.6), // Lighter color for shiny effect
+                                              ],
+                                              begin: Alignment
+                                                  .topLeft, // Start of the gradient
+                                              end: Alignment
+                                                  .bottomRight, // End of the gradient
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Color.fromRGBO(
+                                                    10,
+                                                    201,
+                                                    244,
+                                                    0.5), // Add glow-like shadow
+                                                blurRadius: 10,
+                                                spreadRadius: 5,
+                                                offset: Offset(
+                                                    2, 2), // Shadow offset
+                                              ),
+                                            ],
+                                          ),
+                                          child: Text(
+                                            "${patientCount[index][patientKey[index]]}",
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
                               },
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: PieChart(
+                              chartRadius: MediaQuery.of(context).size.width / 1.5,
+                              dataMap: patientCountMap,
+                              // chartType: ChartType.ring,
+                              legendOptions: const LegendOptions(
+                                showLegendsInRow: false,
+                                legendPosition: LegendPosition.bottom,
+                                showLegends: true,
+                                // legendShape: _BoxShape.circle,
+                                legendTextStyle: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              baseChartColor: Colors.grey[300]!,
+                              gradientList: gradientList,
+                              emptyColorGradient: const [
+                                Color(0xff6c5ce7),
+                                Colors.blue,
+                              ],
                             ),
                           ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
-
 
   Widget _buildAppBar(double width) {
     return Row(
@@ -455,7 +419,9 @@ class _DoctorHomeScreenState extends State
             );
           },
         ),
-        const SizedBox(width: 90,),
+        const SizedBox(
+          width: 90,
+        ),
         Text(
           'CareSync',
           style: GoogleFonts.poppins(
@@ -479,7 +445,11 @@ class _DoctorHomeScreenState extends State
           },
         ),
         IconButton(
-          icon: const Icon(Icons.chat_outlined, size: 32, color: Colors.black87,),
+          icon: const Icon(
+            Icons.chat_outlined,
+            size: 32,
+            color: Colors.black87,
+          ),
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(
@@ -530,21 +500,27 @@ class _DoctorHomeScreenState extends State
                 ),
               ),
               const SizedBox(height: 10),
-              Text(
-                ' How can we assist you today?',
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black54,
+              SizedBox(
+                width: 200,
+                child: Text(
+                  ' How can we assist you today?',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black54,
+                  ),
                 ),
               ),
             ],
           ),
-          Image.asset(
-            'assets/png/DoctorSide/logo.png',
-            width: width * 0.36,
-            height: height * 0.23,
-            fit: BoxFit.fill,
+          Container(
+            width: width * 0.39,
+            height: height * 0.28,
+            child: Image.asset(
+              'assets/png/drHome.png',
+              fit: BoxFit.fill,
+            ),
           ),
         ],
       ),
@@ -575,4 +551,3 @@ class _DoctorHomeScreenState extends State
     );
   }
 }
-

@@ -517,6 +517,8 @@
 //   }
 // }
 
+import 'dart:developer';
+
 import 'package:caresync/Snehal/appointment/book_appointment.dart';
 import 'package:caresync/Tejas/PatientSide.dart/PatientHomeScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -1005,7 +1007,7 @@ class _SelectTimeState extends State<SelectTime> {
     final patientId = currentUser?.uid ?? '';
     // Store user information in Firestore
     try {
-      await _firestore
+    DocumentReference data=  await _firestore
           .collection('CareSync')
           .doc('patients')
           .collection('accounts')
@@ -1013,6 +1015,7 @@ class _SelectTimeState extends State<SelectTime> {
           .collection('appointments') // Add data to appointments collection
           .add({
         'name': widget.patientName,
+        'patientId' : patientId,
         'phone': widget.number,
         'date': widget.selectedDate,
         'time': selectedTime,
@@ -1021,6 +1024,8 @@ class _SelectTimeState extends State<SelectTime> {
         'status': "pending",
       });
 
+      log("Expected patientid  ${data.id}");
+
       await _firestore
           .collection('CareSync')
           .doc('doctors')
@@ -1028,6 +1033,7 @@ class _SelectTimeState extends State<SelectTime> {
           .doc(widget.doctorId)
           .collection('appointments')
           .add({
+            'appointmentId' : data.id,
         'name': widget.patientName,
         'phone': widget.number,
         'date': widget.selectedDate,
@@ -1035,6 +1041,8 @@ class _SelectTimeState extends State<SelectTime> {
         'doctorName': widget.doctorName,
         'doctorId': widget.doctorId, // Time selected by the user
         'status': "pending",
+        'patientId' : patientId,
+        
       });
 
       // Show a success message and navigate to the Sign In page

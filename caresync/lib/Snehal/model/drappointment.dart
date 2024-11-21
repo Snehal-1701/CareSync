@@ -4,6 +4,9 @@ class DrAppointment {
   final String phone;
   final String time;
   String status;
+  String appointmentId;
+  String patientId;
+  final String patientAppId;
 
   DrAppointment({
     required this.name,
@@ -11,5 +14,8 @@ class DrAppointment {
     required this.date,
     required this.phone,
     required this.status,
+    required this.appointmentId,
+    required this.patientId,
+    required this.patientAppId,
   });
 }

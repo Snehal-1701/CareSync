@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'UpcomingPatientScreen.dart';
+import 'rejectedpatients.dart';
 
 class AppDrawer extends StatefulWidget {
   final bool isDarkMode;
@@ -147,34 +148,36 @@ class _AppDrawerState extends State<AppDrawer>
                 _buildDrawerItem(Icons.people, 'Patients', context, width),
                 _buildDrawerItem(
                     Icons.schedule, 'Upcoming Patients', context, width),
-                const Divider(),
-                ListTile(
-                  leading: AnimatedContainer(
-                    duration: const Duration(milliseconds: 500),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color:
-                          _isDarkMode ? Colors.grey[800] : Colors.yellow[700],
-                    ),
-                    padding: const EdgeInsets.all(8),
-                    child: Icon(
-                      _isDarkMode ? Icons.dark_mode : Icons.light_mode,
-                      color: _isDarkMode ? Colors.white : Colors.black,
-                    ),
-                  ),
-                  title: Text('Dark Mode',
-                      style: GoogleFonts.lato(fontSize: width * 0.045)),
-                  trailing: Switch(
-                    value: _isDarkMode,
-                    onChanged: (value) {
-                      setState(() {
-                        _isDarkMode = value;
-                      });
-                      widget.toggleTheme();
-                    },
-                  ),
-                ),
-                const Divider(),
+              
+                 _buildDrawerItem(Icons.block, 'Rejected Patients', context, width),
+                   const Divider(),
+                // ListTile(
+                //   leading: AnimatedContainer(
+                //     duration: const Duration(milliseconds: 500),
+                //     decoration: BoxDecoration(
+                //       shape: BoxShape.circle,
+                //       color:
+                //           _isDarkMode ? Colors.grey[800] : Colors.yellow[700],
+                //     ),
+                //     padding: const EdgeInsets.all(8),
+                //     child: Icon(
+                //       _isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                //       color: _isDarkMode ? Colors.white : Colors.black,
+                //     ),
+                //   ),
+                //   title: Text('Dark Mode',
+                //       style: GoogleFonts.lato(fontSize: width * 0.045)),
+                //   trailing: Switch(
+                //     value: _isDarkMode,
+                //     onChanged: (value) {
+                //       setState(() {
+                //         _isDarkMode = value;
+                //       });
+                //       widget.toggleTheme();
+                //     },
+                //   ),
+                // ),
+                // const Divider(),
                 ListTile(
                   leading: const Icon(Icons.logout),
                   title: Text('Logout', style: GoogleFonts.lato(fontSize: 16)),
@@ -244,16 +247,21 @@ class _AppDrawerState extends State<AppDrawer>
             context,
             MaterialPageRoute(builder: (context) => const PatientListScreen()),
           );
+        } else if (title == 'Rejected Patients') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const RejectedPatientListScreen()),
+          );
         } else if (title == 'Upcoming Patients') {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => const UpcomingPatientScreen(
-                patient: null,
+                
               ),
             ),
           );
-        }
+        } 
       },
     );
   }

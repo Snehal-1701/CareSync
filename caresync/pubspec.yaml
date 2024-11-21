@@ -24,6 +24,7 @@ dependencies:
   firebase_database: ^11.1.6
   firebase_storage: ^12.3.6
   file_picker: ^8.1.4
+  pie_chart: ^5.4.0
   
   
   
@@ -67,3 +68,5 @@ flutter:
     - assets/jpg/images/
     - assets/jpg/carousel_jpg/
     - assets/svg/specialisation/
+    - assets/svg/
+    - assets/png/drHome.png
