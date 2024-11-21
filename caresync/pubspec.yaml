@@ -25,6 +25,8 @@ dependencies:
   firebase_storage: ^12.3.6
   file_picker: ^8.1.4
   pie_chart: ^5.4.0
+  video_player: ^2.9.2
+  flutter_pdfview: ^1.3.4
   
   
   
@@ -64,9 +66,15 @@ flutter:
     - assets/jpg/DoctorSide/
     - assets/png/DoctorSide/
     - assets/png/images/
+    - assets/png/
     - assets/svg/record.svg
     - assets/jpg/images/
     - assets/jpg/carousel_jpg/
     - assets/svg/specialisation/
     - assets/svg/
     - assets/png/drHome.png
+    - assets/Doctor holding gift box.mp4
+    - assets/Doctor holding gift box.gif
+    - assets/Doctor.gif
+    - assets/Avatar Male Doctor.gif
+    - assets/Book online doctor appointment.gif

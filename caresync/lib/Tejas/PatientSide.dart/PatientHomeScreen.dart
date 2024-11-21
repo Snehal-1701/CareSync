@@ -393,6 +393,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../Snehal/blood_form/fillbloodform.dart';
 import 'Drawer.dart';
 
 class PatientHomeScreen extends StatefulWidget {
@@ -422,9 +423,9 @@ class _PatientHomeScreenState extends State<PatientHomeScreen>
     const DoctorCategories(),
     const MedicalStore(),
     const AyurvedaGridScreen(),
-    const Page1(),
+    const Bloodgroup(),
     AmbulanceBookingHome(),
-    const Page1(),
+    const Bloodgroup()
   ];
 
   final List<String> imageList = [

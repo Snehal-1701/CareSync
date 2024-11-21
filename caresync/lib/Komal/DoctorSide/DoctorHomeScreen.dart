@@ -18,7 +18,6 @@ class DoctorHomeScreen extends StatefulWidget {
 }
 
 class _DoctorHomeScreenState extends State with SingleTickerProviderStateMixin {
-
   late Future<List<Map<String, String>>> patients;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -100,9 +99,7 @@ class _DoctorHomeScreenState extends State with SingleTickerProviderStateMixin {
     } catch (e) {
       print('Error fetching appointments: $e');
     }
-    setState(() {
-      
-    });
+    setState(() {});
     return appointmentList;
   }
 
@@ -122,9 +119,7 @@ class _DoctorHomeScreenState extends State with SingleTickerProviderStateMixin {
         } else if (patient['status'] == 'Rejected') {
           rejectedPatients++;
         }
-        setState(() {
-          
-        });
+        setState(() {});
       }
 
       log("Accepted patient count _____${acceptedPatients}");
@@ -183,8 +178,8 @@ class _DoctorHomeScreenState extends State with SingleTickerProviderStateMixin {
     double height = MediaQuery.of(context).size.height;
     final gradientList = <List<Color>>[
       [
-        Color.fromRGBO(10, 201, 244,1), 
-        Color.fromRGBO(255, 255, 255,0.6),
+        Color.fromRGBO(10, 201, 244, 1),
+        Color.fromRGBO(255, 255, 255, 0.6),
       ],
       [
         Color.fromRGBO(129, 182, 205, 1),
@@ -192,7 +187,7 @@ class _DoctorHomeScreenState extends State with SingleTickerProviderStateMixin {
       ],
       [
         Color.fromRGBO(104, 238, 190, 1), // Base color
-        Color.fromRGBO(104, 238, 190,0.8),
+        Color.fromRGBO(104, 238, 190, 0.8),
       ]
     ];
 
@@ -242,22 +237,166 @@ class _DoctorHomeScreenState extends State with SingleTickerProviderStateMixin {
                     height: 15,
                   ),
                   _buildWelcomeSection(width, height),
+                  // Expanded(
+                  //   child: SingleChildScrollView(
+                  //     child: Column(
+                  //       children: [
+                  //         Container(
+                  //           margin: const EdgeInsets.symmetric(
+                  //               horizontal: 10, vertical: 15),
+                  //           decoration: const BoxDecoration(
+                  //             //color: Colors.white10.withOpacity(0.5),
+                  //             borderRadius: BorderRadius.only(
+                  //               topLeft: Radius.circular(40),
+                  //               topRight: Radius.circular(40),
+                  //             ),
+                  //           ),
+                  //           padding: const EdgeInsets.fromLTRB(16.0, 0, 16, 16),
+                  //           height: height * 0.7,
+                  //           child: GridView.builder(
+                  //             shrinkWrap: true,
+                  //             physics: const NeverScrollableScrollPhysics(),
+                  //             gridDelegate:
+                  //                 const SliverGridDelegateWithFixedCrossAxisCount(
+                  //               crossAxisCount: 2,
+                  //               mainAxisSpacing: 20,
+                  //               crossAxisSpacing: 30,
+                  //             ),
+                  //             itemCount: patientCount.length,
+                  //             itemBuilder: (context, index) {
+                  //               return Container(
+                  //                 height: 200,
+                  //                 width: 200,
+                  //                 // child:
+                  //                 decoration: BoxDecoration(
+                  //                   gradient: const LinearGradient(
+                  //                     colors: [
+                  //                       Color.fromRGBO(
+                  //                           104, 238, 190, 1), // Base color
+                  //                       Color.fromRGBO(104, 238, 190,
+                  //                           0.8), // Slightly transparent shade
+                  //                       Color.fromRGBO(255, 255, 255,
+                  //                           0.5), // Light highlight for shine
+                  //                     ],
+                  //                     begin: Alignment
+                  //                         .topLeft, // Start of the gradient
+                  //                     end: Alignment
+                  //                         .bottomRight, // End of the gradient
+                  //                   ),
+                  //                   borderRadius: BorderRadius.circular(
+                  //                       15), // Rounded corners
+                  //                   boxShadow: [
+                  //                     BoxShadow(
+                  //                       color: Colors.teal
+                  //                           .withOpacity(0.3), // Shadow color
+                  //                       offset: Offset(5, 5), // Shadow position
+                  //                       blurRadius: 10, // Shadow blur
+                  //                     ),
+                  //                   ],
+                  //                 ),
+                  //                 child: Stack(
+                  //                   children: [
+                  //                     Padding(
+                  //                       padding: const EdgeInsets.all(8.0),
+                  //                       child: Text(
+                  //                         patientKey[index],
+                  //                         textAlign: TextAlign.center,
+                  //                         style: GoogleFonts.poppins(
+                  //                           fontSize: 20,
+                  //                           fontWeight: FontWeight.w600,
+                  //                         ),
+                  //                       ),
+                  //                     ),
+                  //                     // SizedBox(height:10),
+                  //                     Positioned(
+                  //                       top: 100,
+                  //                       left: 26,
+                  //                       child: Container(
+                  //                         padding: const EdgeInsets.all(25.0),
+                  //                         height: 100,
+                  //                         width: 100,
+                  //                         // decoration: const BoxDecoration(
+                  //                         //     shape: BoxShape.circle,
+                  //                         //     color: Color.fromRGBO(
+                  //                         //         10, 201, 244, 1)),
+                  //                         decoration: const BoxDecoration(
+                  //                           shape: BoxShape
+                  //                               .circle, // Makes the container circular
+                  //                           gradient: LinearGradient(
+                  //                             colors: [
+                  //                               Color.fromRGBO(10, 201, 244,1), // Base color
+                  //                               Color.fromRGBO(255, 255, 255,0.6), // Lighter color for shiny effect
+                  //                             ],
+                  //                             begin: Alignment
+                  //                                 .topLeft, // Start of the gradient
+                  //                             end: Alignment
+                  //                                 .bottomRight, // End of the gradient
+                  //                           ),
+                  //                           boxShadow: [
+                  //                             BoxShadow(
+                  //                               color: Color.fromRGBO(
+                  //                                   10,
+                  //                                   201,
+                  //                                   244,
+                  //                                   0.5), // Add glow-like shadow
+                  //                               blurRadius: 10,
+                  //                               spreadRadius: 5,
+                  //                               offset: Offset(
+                  //                                   2, 2), // Shadow offset
+                  //                             ),
+                  //                           ],
+                  //                         ),
+                  //                         child: Text(
+                  //                           "${patientCount[index][patientKey[index]]}",
+                  //                           textAlign: TextAlign.center,
+                  //                           style: GoogleFonts.poppins(
+                  //                             fontSize: 20,
+                  //                             fontWeight: FontWeight.w600,
+                  //                           ),
+                  //                         ),
+                  //                       ),
+                  //                     ),
+                  //                   ],
+                  //                 ),
+                  //               );
+                  //             },
+                  //           ),
+                  //         ),
+                  //         Container(
+                  //           padding: EdgeInsets.symmetric(horizontal: 16),
+                  //           child: PieChart(
+                  //             chartRadius: MediaQuery.of(context).size.width / 1.5,
+                  //             dataMap: patientCountMap,
+                  //             // chartType: ChartType.ring,
+                  //             legendOptions: const LegendOptions(
+                  //               showLegendsInRow: false,
+                  //               legendPosition: LegendPosition.bottom,
+                  //               showLegends: true,
+                  //               // legendShape: _BoxShape.circle,
+                  //               legendTextStyle: TextStyle(
+                  //                 fontWeight: FontWeight.bold,
+                  //               ),
+                  //             ),
+                  //             baseChartColor: Colors.grey[300]!,
+                  //             gradientList: gradientList,
+                  //             emptyColorGradient: const [
+                  //               Color(0xff6c5ce7),
+                  //               Colors.blue,
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
+                          // Remove or reduce the margin of this Container
                           Container(
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 15),
-                            decoration: const BoxDecoration(
-                              //color: Colors.white10.withOpacity(0.5),
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(40),
-                                topRight: Radius.circular(40),
-                              ),
-                            ),
-                            padding: const EdgeInsets.fromLTRB(16.0, 0, 16, 16),
-                            height: height * 0.7,
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            padding: const EdgeInsets.fromLTRB(16.0, 0, 16, 0),
                             child: GridView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
@@ -272,30 +411,22 @@ class _DoctorHomeScreenState extends State with SingleTickerProviderStateMixin {
                                 return Container(
                                   height: 200,
                                   width: 200,
-                                  // child:
                                   decoration: BoxDecoration(
                                     gradient: const LinearGradient(
                                       colors: [
-                                        Color.fromRGBO(
-                                            104, 238, 190, 1), // Base color
-                                        Color.fromRGBO(104, 238, 190,
-                                            0.8), // Slightly transparent shade
-                                        Color.fromRGBO(255, 255, 255,
-                                            0.5), // Light highlight for shine
+                                        Color.fromRGBO(104, 238, 190, 1),
+                                        Color.fromRGBO(104, 238, 190, 0.8),
+                                        Color.fromRGBO(255, 255, 255, 0.5),
                                       ],
-                                      begin: Alignment
-                                          .topLeft, // Start of the gradient
-                                      end: Alignment
-                                          .bottomRight, // End of the gradient
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
                                     ),
-                                    borderRadius: BorderRadius.circular(
-                                        15), // Rounded corners
+                                    borderRadius: BorderRadius.circular(15),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.teal
-                                            .withOpacity(0.3), // Shadow color
-                                        offset: Offset(5, 5), // Shadow position
-                                        blurRadius: 10, // Shadow blur
+                                        color: Colors.teal.withOpacity(0.3),
+                                        offset: Offset(5, 5),
+                                        blurRadius: 10,
                                       ),
                                     ],
                                   ),
@@ -312,7 +443,6 @@ class _DoctorHomeScreenState extends State with SingleTickerProviderStateMixin {
                                           ),
                                         ),
                                       ),
-                                      // SizedBox(height:10),
                                       Positioned(
                                         top: 100,
                                         left: 26,
@@ -320,34 +450,24 @@ class _DoctorHomeScreenState extends State with SingleTickerProviderStateMixin {
                                           padding: const EdgeInsets.all(25.0),
                                           height: 100,
                                           width: 100,
-                                          // decoration: const BoxDecoration(
-                                          //     shape: BoxShape.circle,
-                                          //     color: Color.fromRGBO(
-                                          //         10, 201, 244, 1)),
                                           decoration: const BoxDecoration(
-                                            shape: BoxShape
-                                                .circle, // Makes the container circular
+                                            shape: BoxShape.circle,
                                             gradient: LinearGradient(
                                               colors: [
-                                                Color.fromRGBO(10, 201, 244,1), // Base color
-                                                Color.fromRGBO(255, 255, 255,0.6), // Lighter color for shiny effect
+                                                Color.fromRGBO(10, 201, 244, 1),
+                                                Color.fromRGBO(
+                                                    255, 255, 255, 0.6),
                                               ],
-                                              begin: Alignment
-                                                  .topLeft, // Start of the gradient
-                                              end: Alignment
-                                                  .bottomRight, // End of the gradient
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
                                             ),
                                             boxShadow: [
                                               BoxShadow(
                                                 color: Color.fromRGBO(
-                                                    10,
-                                                    201,
-                                                    244,
-                                                    0.5), // Add glow-like shadow
+                                                    10, 201, 244, 0.5),
                                                 blurRadius: 10,
                                                 spreadRadius: 5,
-                                                offset: Offset(
-                                                    2, 2), // Shadow offset
+                                                offset: Offset(2, 2),
                                               ),
                                             ],
                                           ),
@@ -367,26 +487,53 @@ class _DoctorHomeScreenState extends State with SingleTickerProviderStateMixin {
                               },
                             ),
                           ),
+                          // Ensure there is no extra padding here
+                          SizedBox(height:10),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: PieChart(
-                              chartRadius: MediaQuery.of(context).size.width / 1.5,
-                              dataMap: patientCountMap,
-                              // chartType: ChartType.ring,
-                              legendOptions: const LegendOptions(
-                                showLegendsInRow: false,
-                                legendPosition: LegendPosition.bottom,
-                                showLegends: true,
-                                // legendShape: _BoxShape.circle,
-                                legendTextStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
+                            margin: EdgeInsets.all(25),
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Colors.black,
+                                style: BorderStyle.solid
+                              )
+                            ),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Patients Overview",
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.w600
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              baseChartColor: Colors.grey[300]!,
-                              gradientList: gradientList,
-                              emptyColorGradient: const [
-                                Color(0xff6c5ce7),
-                                Colors.blue,
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 10),
+                                  child: PieChart(
+                                    chartRadius:
+                                        MediaQuery.of(context).size.width / 1.5,
+                                    dataMap: patientCountMap,
+                                    legendOptions: const LegendOptions(
+                                      showLegendsInRow: false,
+                                      legendPosition: LegendPosition.bottom,
+                                      showLegends: true,
+                                      legendTextStyle: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    baseChartColor: Colors.grey[300]!,
+                                    gradientList: gradientList,
+                                    emptyColorGradient: const [
+                                      Color(0xff6c5ce7),
+                                      Colors.blue,
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -433,7 +580,7 @@ class _DoctorHomeScreenState extends State with SingleTickerProviderStateMixin {
         const Spacer(),
         IconButton(
           icon: const Icon(
-            Icons.notifications_none,
+            Icons.notifications_active_rounded,
             size: 32,
             color: Colors.black87,
           ),
@@ -463,68 +610,67 @@ class _DoctorHomeScreenState extends State with SingleTickerProviderStateMixin {
   }
 
   Widget _buildWelcomeSection(double width, double height) {
-    return Container(
-      width: width * 0.9,
-      height: height * 0.25,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.4),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Welcome',
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                ),
-              ),
-              Text(
-                'Dr. $_patientName !',
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: 200,
-                child: Text(
-                  ' How can we assist you today?',
-                  textAlign: TextAlign.center,
+    return Stack(children: [
+      Container(
+        width: width * 0.9,
+        height: height * 0.25,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.4),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Welcome',
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.black54,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
                   ),
                 ),
-              ),
-            ],
-          ),
-          Container(
-            width: width * 0.39,
-            height: height * 0.28,
-            child: Image.asset(
-              'assets/png/drHome.png',
-              fit: BoxFit.fill,
+                Text(
+                  'Dr. $_patientName !',
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: 180,
+                  child: Text(
+                    ' How can we assist you today?',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
+            Container(
+              width: width * 0.40,
+              // height: height * 0.50,
+              child: Image.asset('assets/Doctor.gif', fit: BoxFit.fill),
+            ),
+          ],
+        ),
       ),
-    );
+    ]);
   }
 
   Widget _buildGridItem(int index, String imagePath) {
